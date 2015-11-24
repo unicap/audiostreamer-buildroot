@@ -1,0 +1,6 @@
+config BR2_PACKAGE_BRUTEFIR
+       bool "brutefir"
+       help
+         brutefir convolver
+
+	 http://www.ludd.luth.se/~torger/brutefir.html
