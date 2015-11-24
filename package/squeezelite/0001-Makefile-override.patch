@@ -10,7 +10,7 @@ diff -ruN a/Makefile b/Makefile
 @@ -1,4 +1,6 @@
  # Cross compile support - create a Makefile which defines these three variables and then includes this Makefile...
 +override CFLAGS += $(OPTS)
-+override LDFLAGS += -lasound -lpthread -lm -lrt
++override LDFLAGS += -lasound -lpthread -lm -lrt -ljack
  CFLAGS  ?= -Wall -fPIC -O2 $(OPTS)
  LDFLAGS ?= -lasound -lpthread -lm -lrt
  EXECUTABLE ?= squeezelite
