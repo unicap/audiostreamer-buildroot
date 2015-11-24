@@ -4,17 +4,18 @@
 #
 ################################################################################
 
-SHAIRPORT_SYNC_VERSION = 2.6
-SHAIRPORT_SYNC_SITE = $(call github,mikebrady,shairport-sync,$(SHAIRPORT_SYNC_VERSION))
+SHAIRPORT_SYNC_VERSION = HEAD
+SHAIRPORT_SYNC_SITE = $(call github,unicap,shairport-sync,$(SHAIRPORT_SYNC_VERSION))
 
 SHAIRPORT_SYNC_LICENSE = MIT, BSD-3c
 SHAIRPORT_SYNC_LICENSE_FILES = LICENSES
-SHAIRPORT_SYNC_DEPENDENCIES = alsa-lib libconfig libdaemon popt host-pkgconf
+SHAIRPORT_SYNC_DEPENDENCIES = jack2 alsa-lib libconfig libdaemon popt host-pkgconf
 
 # git clone, no configure
 SHAIRPORT_SYNC_AUTORECONF = YES
 
 SHAIRPORT_SYNC_CONF_OPTS = --with-alsa \
+	--with-jack \
 	--with-metadata \
 	--with-pipe \
 	--with-stdout
