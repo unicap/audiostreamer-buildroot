@@ -1,17 +1,22 @@
 #!/bin/sh
 
+BINARY=/usr/bin/squeezelite
+ARGS=-R
+PIDFILE=/var/run/squeezelite.pid
+
 # Sanity checks
-test -f /usr/bin/squeezelite || exit 0
+test -f $BINARY || exit 0
 
 start() {
 	printf "Starting squeezelite: "
-	start-stop-daemon --start --quiet --background --exec /usr/bin/squeezelite \
+	start-stop-daemon --start --quiet --background -m --pidfile $PIDFILE \
+			  --exec $BINARY -- $ARGS \
 		&& echo "OK" || echo "FAIL"
 }
 
 stop() {
 	printf "Stopping squeezelite: "
-	start-stop-daemon --stop --quiet --pidfile /var/run/squeezelite.pid \
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE \
 		&& echo "OK" || echo "FAIL"
 }
 
