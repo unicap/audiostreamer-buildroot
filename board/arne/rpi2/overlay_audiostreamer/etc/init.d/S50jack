@@ -1,0 +1,38 @@
+#!/bin/sh
+
+BINARY=/usr/bin/jackd
+ARGS="-R -P 10 -dalsa -P -dhw:0 -r96000 -p 1024 -n2"
+PIDFILE=/var/run/jackd.pid
+
+# Sanity checks
+test -f $BINARY || exit 0
+
+start() {
+	printf "Starting jack: "
+	start-stop-daemon --start --quiet --background -m --pidfile $PIDFILE \
+			  --exec $BINARY -- $ARGS \
+	    && echo "OK" || echo "FAIL"
+}
+
+stop() {
+	printf "Stopping squeezelite: "
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE \
+		&& echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
