@@ -5,7 +5,7 @@
 ################################################################################
 
 #SQUEEZELITE_VERSION = v1.8
-SQUEEZELITE_VERSION = HEAD
+SQUEEZELITE_VERSION = 5c01b6a96e028755a002c0045e08a839256a7a51
 SQUEEZELITE_SITE = $(call github,unicap,squeezelite,$(SQUEEZELITE_VERSION))
 SQUEEZELITE_LICENSE = GPLv3
 SQUEEZELITE_LICENSE_FILES = LICENSE.txt
