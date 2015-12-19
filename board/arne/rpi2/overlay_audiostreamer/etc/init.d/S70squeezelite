@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BINARY=/usr/bin/squeezelite
+BINARY=/usr/bin/squeezelite-jack
 ARGS=-R
 PIDFILE=/var/run/squeezelite.pid
 
@@ -8,14 +8,14 @@ PIDFILE=/var/run/squeezelite.pid
 test -f $BINARY || exit 0
 
 start() {
-	printf "Starting squeezelite: "
+	printf "Starting $BINARY: "
 	start-stop-daemon --start --quiet --background -m --pidfile $PIDFILE \
 			  --exec $BINARY -- $ARGS \
 		&& echo "OK" || echo "FAIL"
 }
 
 stop() {
-	printf "Stopping squeezelite: "
+	printf "Stopping $BINARY: "
 	start-stop-daemon --stop --quiet --pidfile $PIDFILE \
 		&& echo "OK" || echo "FAIL"
 }
