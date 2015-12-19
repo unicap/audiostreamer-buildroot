@@ -195,6 +195,10 @@ config BR2_PACKAGE_GST_PLUGINS_GOOD_PLUGIN_GDKPIXBUF
 comment "gdkpixbuf needs a toolchain w/ wchar, threads"
 	depends on !BR2_USE_WCHAR || !BR2_TOOLCHAIN_HAS_THREADS
 
+config BR2_PACKAGE_GST_PLUGINS_GOOD_PLUGIN_JACK
+       bool "jack"
+       select BR2_PACKAGE_JACK2
+
 config BR2_PACKAGE_GST_PLUGINS_GOOD_PLUGIN_OSS
 	bool "ossaudio (OSS audio)"
 

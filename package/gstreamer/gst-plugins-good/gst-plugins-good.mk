@@ -349,6 +349,13 @@ else
 GST_PLUGINS_GOOD_CONF_OPTS += --disable-gdk_pixbuf
 endif
 
+ifeq ($(BR2_PACKAGE_GST_PLUGINS_GOOD_PLUGIN_JACK),y)
+GST_PLUGINS_GOOD_CONF_OPTS += --enable-jack
+GST_PLUGINS_GOOD_DEPENDENCIES += jack2
+else
+GST_PLUGINS_GOOD_CONF_OPTS += --disable-jack
+endif
+
 ifeq ($(BR2_PACKAGE_GST_PLUGINS_GOOD_PLUGIN_OSS),y)
 GST_PLUGINS_GOOD_CONF_OPTS += --enable-oss
 else
