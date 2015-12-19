@@ -17,10 +17,6 @@ config BR2_PACKAGE_SQUEEZELITE
 
 if BR2_PACKAGE_SQUEEZELITE
 
-config BR2_PACKAGE_SQUEEZELITE_JACK
-       bool "Enable Jack"
-       select BR2_PACKAGE_JACK2
-
 config BR2_PACKAGE_SQUEEZELITE_FFMPEG
 	bool "Enable WMA and ALAC decoding"
 	default y
