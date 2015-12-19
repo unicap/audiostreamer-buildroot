@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SHAIRPORT_SYNC_VERSION = HEAD
+SHAIRPORT_SYNC_VERSION = 33ee9e0fd6d0ba469351f26dea44c2c15878f8c5
 SHAIRPORT_SYNC_SITE = $(call github,unicap,shairport-sync,$(SHAIRPORT_SYNC_VERSION))
 
 SHAIRPORT_SYNC_LICENSE = MIT, BSD-3c
