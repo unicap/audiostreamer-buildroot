@@ -55,7 +55,7 @@ endef
 
 define SHAIRPORT_SYNC_INSTALL_INIT_SYSV
 	$(INSTALL) -D -m 0755 package/shairport-sync/S99shairport-sync \
-		$(TARGET_DIR)/etc/init.d/S99shairport-sync
+		$(TARGET_DIR)/etc/init.d/shairport-sync
 endef
 
 $(eval $(autotools-package))
