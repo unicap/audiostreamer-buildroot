@@ -1,0 +1,51 @@
+#!/bin/sh
+
+
+# Script to start all mode dependend init scripts
+
+# Source our userconfig
+
+CONFIG=/mnt/mmcblk0p1/userconfig.txt
+MODEFILE=/var/run/audiostreamer/mode
+
+if [ -e ${CONFIG} ];
+then
+    . ${CONFIG}
+else
+    echo "No userconfig, using defaults"
+    . /etc/userconfig_default.txt
+fi
+
+if [ -z ${MODE} ];
+then
+    echo "Missing MODE in user config!"
+    exit 0
+fi
+
+echo "Switching to mode: $MODE"
+
+if [ -e ${MODEFILE} ];
+then
+    echo "Shutting down previous mode"
+    /etc/init.d/rcK_M
+fi
+
+
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+for i in /etc/init.d/M$MODE/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     # Source shell script to pass user config
+     (
+	 trap - INT QUIT TSTP
+	 set start
+	 . $i
+     )
+done
+
+mkdir -p /var/run/audiostreamer
+echo -n $MODE >> /var/run/audiostreamer/mode
