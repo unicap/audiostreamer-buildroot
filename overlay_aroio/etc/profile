@@ -1,0 +1,6 @@
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+LD_LIBRARY_PATH=/lib
+export PATH LD_LIBRARY_PATH
+
+TZ="Europe/Berlin"
+export TZ

@@ -1,0 +1,128 @@
+#!/bin/sh
+
+if ! [ -e /mnt/mmcblk0p1/userconfig.txt  ]
+then
+	echo "ChkUsercfg:  Keine userconfig.txt gefunden, lege eine an..."
+	mount -o remount,rw /mnt/mmcblk0p1
+	touch /mnt/mmcblk0p1/userconfig.txt
+	mount -o remount /mnt/mmcblk0p1/
+fi
+
+. /mnt/mmcblk0p1/userconfig.txt
+
+if [ "$UPDATESERVER" = "" ] || [ "$UPDATESERVER" = "www.abacus-electronics.de/aroio"  ] ; then UPDATESERVER="www.abacus-electronics.de/aroio2" ; fi
+if [ "$HOSTNAME" = "" ] || [ "$HOSTNAME" = "(none)" ] ; then HOSTNAME="AroioEX" ; fi
+if [ "$PLAYERNAME" = "" ] || [ "$PLAYERNAME" = "(none)" ] ; then PLAYERNAME="AroioEX" ; fi
+if [ "$DHCP" = "" ] || [ "$DHCP" = "OFF" ] && [ "$IPADDR" = "" -o "$NETMASK" = "" -o DNSSERV = "" -o GATEWAY = "" ] ; then DHCP="ON" ; fi
+if [ "$DHCP" = "ON"  ]
+then
+	IPADDR=""
+	NETMASK=""
+	DNSSERV=""
+	GATEWAY=""
+fi
+
+# Folgende Variablen duerfen leer sein, aber beim Ausschreiben nicht vergessen werden...
+# SERVERNAME , SQUEEZEUSER , SQUEEZEPWD , SERVERPORT
+
+if [ "$PLAYERNAME" = ""  ] 	; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$MSCODING" = "" ] 	; then MSCODING="OFF" ; fi
+if [ "$VOLUME" = "" ] 		; then VOLUME="0 dB" ; fi
+if [ "$ALSAOUTBUFF" = "" ]	; then ALSAOUTBUFF="8192" ; fi
+if [ "$ALSAPERIOD" = "" ]	; then ALSAPERIOD="1024" ; fi
+if [ "$ALSASAMPLEFMT" = "" ]	; then ALSASAMPLEFMT="24" ; fi
+if [ "$ALSAMMAP" = "" ]		; then ALSAMMAP="0" ; fi
+if [ "$STREAMBUFF" = "" ]	; then STREAMBUFF="1024" ; fi
+if [ "$DEBUG" = "" ]		; then DEBUG="OFF" ; fi
+if [ "$USERPASSWD" = "" ]	; then USERPASSWD="abacus" ; fi
+if [ "$BRUTEFIR" = "" ]		; then BRUTEFIR="OFF" ; fi
+
+if [ "$BRUTEFIR" = "OFF" ]
+then
+	if [ "$ALSAOUTBUFF" = "" ]      ; then ALSAOUTBUFF="8192" ; fi
+	if [ "$ALSAPERIOD" = "" ]       ; then ALSAPERIOD="1024" ; fi
+	if [ "$ALSASAMPLEFMT" = "" ]    ; then ALSASAMPLEFMT="24" ; fi
+	if [ "$ALSAMMAP" = "" ]         ; then ALSAMMAP="0" ; fi
+	if [ "$STREAMBUFF" = "" ]       ; then STREAMBUFF="1024" ; fi
+else
+	if [ "$ALSAOUTBUFF" = "" ]      ; then ALSAOUTBUFF="16384" ; fi
+	if [ "$ALSAPERIOD" = "" ]       ; then ALSAPERIOD="8192" ; fi
+	if [ "$ALSASAMPLEFMT" = "" ]    ; then ALSASAMPLEFMT="32" ; fi
+	if [ "$ALSAMMAP" = "" ]         ; then ALSAMMAP="0" ; fi
+	if [ "$STREAMBUFF" = "" ]       ; then STREAMBUFF="8192" ; fi
+fi
+
+#if [ "$DEF_COEFF" = "" ]	; then DEF_COEFF="0" ; fi
+#if [ "$COEFF_ATT0" = "" ]	; then COEFF_ATT="0" ; fi
+#if [ "$COEFF_PHASE0" = "" ]	; then COEFF_PHASE="1" ; fi
+
+rm /tmp/brutefir_filters.txt
+for i in $(grep -o "COEFF_NAME[^m]" /mnt/mmcblk0p1/userconfig.txt)
+do
+        WRITEOUT=$i
+        COEFF_NAME=$(eval echo \$$i)
+        echo $WRITEOUT=\"$COEFF_NAME\" >> /tmp/brutefir_filters.txt
+#        echo $WRITEOUT=\"$COEFF_NAME\"
+done
+
+for i in $(grep -o "COEFF_PHASE[^m]" /mnt/mmcblk0p1/userconfig.txt)
+do
+        WRITEOUT=$i
+        COEFF_PHASE=$(eval echo \$$i)
+        echo $WRITEOUT=\"$COEFF_PHASE\" >> /tmp/brutefir_filters.txt
+#        echo $WRITEOUT=\"$COEFF_PHASE\" 
+done
+
+for i in $(grep -o "COEFF_ATT[^m]" /mnt/mmcblk0p1/userconfig.txt)
+do
+        WRITEOUT=$i
+        COEFF_ATT=$(eval echo \$$i)
+        echo $WRITEOUT=\"$COEFF_ATT\" >> /tmp/brutefir_filters.txt
+#        echo $WRITEOUT=\"$COEFF_ATT\"
+done
+
+for i in $(grep -o "COEFF_COMMENT[^m]" /mnt/mmcblk0p1/userconfig.txt)
+do
+        WRITEOUT=$i
+        COEFF_COMMENT=$(eval echo \$$i)
+        echo $WRITEOUT=\"$COEFF_COMMENT\" >> /tmp/brutefir_filters.txt
+#        echo $WRITEOUT=\"$COEFF_COMMENT\"
+done
+
+mount -o remount,rw /mnt/mmcblk0p1
+rm /mnt/mmcblk0p1/userconfig.txt
+
+for i in UPDATESERVER HOSTNAME DHCP IPADDR \
+NETMASK DNSSERV GATEWAY WLANSSID WLANPWD USERPASSWD SERVERNAME SQUEEZEUSER \
+SQUEEZEPWD SERVERPORT PLAYERNAME MSCODING VOLUME ALSAOUTBUFF \
+ALSAPERIOD ALSASAMPLEFMT ALSAMMAP STREAMBUFF DEBUG \
+BRUTEFIR DEF_COEFF 
+do
+	echo -n $i"="'"' >> /mnt/mmcblk0p1/userconfig.txt
+	eval echo \$$i'\"'   >> /mnt/mmcblk0p1/userconfig.txt
+done
+
+for i in seq 0 1 9
+do
+	grep -o "COEFF_ATT"$i /mnt/mmcblk0p1/userconfig.txt
+	if [ $? -eq 1 ] ; then
+		echo  "COEFF_ATT"$i"=\"\"" >> /mnt/mmcblk0p1/userconfig.txt
+	fi
+	grep -o "COEFF_PHASE"$i /mnt/mmcblk0p1/userconfig.txt
+        if [ $? -eq 1 ] ; then
+                echo  "COEFF_PHASE"$i"=\"\"" >> /mnt/mmcblk0p1/userconfig.txt
+        fi
+	grep -o "COEFF_NAME"$i /mnt/mmcblk0p1/userconfig.txt
+        if [ $? -eq 1 ] ; then
+                echo  "COEFF_NAME"$i"=\"\"" >> /mnt/mmcblk0p1/userconfig.txt
+        fi
+	grep -o "COEFF_COMMENT"$i /mnt/mmcblk0p1/userconfig.txt
+        if [ $? -eq 1 ] ; then
+                echo  "COEFF_COMMENT"$i"=\"\"" >> /mnt/mmcblk0p1/userconfig.txt
+        fi
+done
+
+
+cat /tmp/brutefir_filters.txt >> /mnt/mmcblk0p1/userconfig.txt
+
+mount -o remount,ro /mnt/mmcblk0p1

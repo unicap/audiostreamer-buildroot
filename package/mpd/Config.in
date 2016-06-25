@@ -33,7 +33,7 @@ config BR2_PACKAGE_MPD_SQLITE
 	select BR2_PACKAGE_SQLITE
 	help
 	  Enable sqlite database support.
-	  If you don't use sqlite it will use an ASCII database.
+	  If you do not use sqlite it will use an ASCII database.
 
 comment "Converter plugins"
 
@@ -237,6 +237,11 @@ config BR2_PACKAGE_MPD_OSS
 	bool "oss"
 	help
 	  Enable OSS (Open Sound System) output support.
+
+config BR2_PACKAGE_MPD_PIPE
+       bool "pipe"
+       help
+	Enable pipe output support
 
 config BR2_PACKAGE_MPD_PULSEAUDIO
 	bool "pulseaudio"

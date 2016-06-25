@@ -1,0 +1,57 @@
+pcm.!default {
+    type             plug
+    slave.pcm       "stereo"
+}
+
+pcm.loopback {
+    type hw
+    card 1
+}
+       
+ctl.loopback {
+    type hw
+    card 1
+}
+
+pcm.stereo {
+    type hw
+    card 0
+}
+
+pcm.mscoded {
+    type plug
+    slave.pcm "ladspa";
+}
+
+pcm.ladspa {
+    type ladspa
+    slave.pcm "plughw:0,0";
+    path "/usr/lib/ladspa";
+    plugins [{
+	label matrixStMS
+        input {
+            controls [  ]
+        }
+    }]
+}
+
+pcm.softvolstereo {
+	type		softvol
+	slave.pcm	"plughw:0,0"
+	control.name	"Softmaster_stereo"
+	control.card	0
+}
+
+pcm.softvolmscoded {
+	type		softvol
+	slave.pcm	"mscoded"
+	control.name	"Softmaster_mscoded"
+	control.card	0
+}
+
+#pcm.bluetooth {
+#	type bluetooth
+#	device "5C:2E:59:F6:FE:F8"
+#	profile "auto"
+#}
+

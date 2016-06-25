@@ -1,0 +1,112 @@
+#!/bin/sh
+
+# Check for userconfig.txt and if none found, create empty one
+if ! [ -e /mnt/mmcblk0p1/userconfig.txt  ]
+then
+	echo "ChkUsercfg:  Keine userconfig.txt gefunden, lege eine an..."
+	mount -o remount,rw /mnt/mmcblk0p1
+	touch /mnt/mmcblk0p1/userconfig.txt
+	mount -o remount,ro /mnt/mmcblk0p1/
+fi
+
+# Check, if following values are correct, if not, correct them
+. /mnt/mmcblk0p1/userconfig.txt
+if [ "$UPDATESERVER" = "" ] || [ "$UPDATESERVER" = "www.abacus-electronics.de/aroio"  ] ; then UPDATESERVER="www.abacus-electronics.de/aroio2" ; fi
+if [ "$HOSTNAME" = "" ] || [ "$HOSTNAME" = "(none)" ] ; then HOSTNAME="AroioEX" ; fi
+if [ "$PLAYERNAME" = "" ] || [ "$PLAYERNAME" = "(none)" ] ; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$DHCP" = "" ] || [ "$DHCP" = "OFF" ] && [ "$IPADDR" = "" -o "$NETMASK" = "" -o DNSSERV = "" -o GATEWAY = "" ] ; then DHCP="ON" ; fi
+if [ "$DHCP" = "ON"  ]
+then
+	IPADDR=""
+	NETMASK=""
+	DNSSERV=""
+	GATEWAY=""
+fi
+
+# In case the following variables are empty, write proper defaults
+# These variables can be empty but must not be forgoten when
+# writing to userconfig.txt: SERVERNAME , SQUEEZEUSER , SQUEEZEPWD , SERVERPORT
+
+if [ "$PLAYERNAME" = ""  ] 	; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$MSCODING" = "" ] 	; then MSCODING="OFF" ; fi
+if [ "$VOLUME" = "" ] 		; then VOLUME="0 dB" ; fi
+#if [ "$ALSAOUTBUFF" = "" ]	; then ALSAOUTBUFF="8192" ; fi
+#if [ "$ALSAPERIOD" = "" ]	; then ALSAPERIOD="1024" ; fi
+#if [ "$ALSASAMPLEFMT" = "" ]	; then ALSASAMPLEFMT="24" ; fi
+#if [ "$ALSAMMAP" = "" ]		; then ALSAMMAP="0" ; fi
+#if [ "$STREAMBUFF" = "" ]	; then STREAMBUFF="1024" ; fi
+if [ "$DEBUG" = "" ]		; then DEBUG="OFF" ; fi
+if [ "$USERPASSWD" = "" ]	; then USERPASSWD="abacus" ; fi
+if [ "$BRUTEFIR" = "" ]		; then BRUTEFIR="OFF" ; fi
+
+# Relics... keep for a while the delete...
+#if [ "$BRUTEFIR" = "OFF" ]
+#then
+#	if [ "$ALSAOUTBUFF" = "" ]      ; then ALSAOUTBUFF="8192" ; fi
+#	if [ "$ALSAPERIOD" = "" ]       ; then ALSAPERIOD="1024" ; fi
+#	if [ "$ALSASAMPLEFMT" = "" ]    ; then ALSASAMPLEFMT="24" ; fi
+#	if [ "$ALSAMMAP" = "" ]         ; then ALSAMMAP="0" ; fi
+#	if [ "$STREAMBUFF" = "" ]       ; then STREAMBUFF="1024" ; fi
+#else
+#	if [ "$ALSAOUTBUFF" = "" ]      ; then ALSAOUTBUFF="16384" ; fi
+#	if [ "$ALSAPERIOD" = "" ]       ; then ALSAPERIOD="8192" ; fi
+#	if [ "$ALSASAMPLEFMT" = "" ]    ; then ALSASAMPLEFMT="32" ; fi
+#	if [ "$ALSAMMAP" = "" ]         ; then ALSAMMAP="0" ; fi
+#	if [ "$STREAMBUFF" = "" ]       ; then STREAMBUFF="8192" ; fi
+#fi
+
+# Set proper defaults also here... 
+if [ "$DEF_COEFF" = "" ]	; then DEF_COEFF="0" ; fi
+if [ "$COEFF_ATT0" = "" ]	; then COEFF_ATT="0" ; fi
+if [ "$COEFF_DELAY0" = "" ]	; then COEFF_DELAY="1" ; fi
+
+#Set Att to 0 if empty
+for seq in $(seq 0 1 9); 
+do 
+	eval COEFF_ATT='COEFF_ATT$seq'
+	COEFF_ATT=$(eval echo \$$COEFF_ATT)
+
+	if [ "$COEFF_ATT" = "" ] ; then
+		eval COEFF_ATT$seq="0"
+	fi
+done  
+
+for seq in $(seq 0 1 9); 
+do 
+	eval COEFF_DELAY='COEFF_DELAY$seq'
+	COEFF_DELAY=$(eval echo \$$COEFF_DELAY)
+
+	if [ "$COEFF_DELAY" = "" ] ; then
+		eval COEFF_DELAY$seq="0"
+	fi
+done  
+
+# Relic, keep one for a while...
+#for i in $(grep -o "COEFF_DELAY[^m]" /mnt/mmcblk0p1/userconfig.txt)
+#do
+#        WRITEOUT=$i
+#        COEFF_DELAY=$(eval echo \$$i)
+#        echo $WRITEOUT=\"$COEFF_DELAY\" >> /tmp/brutefir_filters.txt
+##        echo $WRITEOUT=\"$COEFF_DELAY\" 
+#done
+
+# Remount SD-card rw, delete our config and write it from scratch
+# IMPROVE THIS AS IT WRITES TO THE SD-CARD ON EVERY BOOT
+mount -o remount,rw /mnt/mmcblk0p1
+rm /mnt/mmcblk0p1/userconfig.txt
+
+for i in UPDATESERVER HOSTNAME DHCP IPADDR \
+NETMASK DNSSERV GATEWAY WLANSSID WLANPWD USERPASSWD SERVERNAME SQUEEZEUSER \
+SQUEEZEPWD SERVERPORT PLAYERNAME MSCODING VOLUME DEBUG \
+BRUTEFIR DEF_COEFF \
+$(for seq in $(seq 0 1 9); do echo COEFF_NAME$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_COMMENT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_ATT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_DELAY$seq;done) 
+do
+	seq=$((seq+1))
+	echo -n $i"="'"' >> /mnt/mmcblk0p1/userconfig.txt
+	eval echo \$$i'\"'   >> /mnt/mmcblk0p1/userconfig.txt
+done
+
+mount -o remount,ro /mnt/mmcblk0p1

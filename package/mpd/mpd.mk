@@ -5,7 +5,7 @@
 ################################################################################
 
 MPD_VERSION_MAJOR = 0.19
-MPD_VERSION = $(MPD_VERSION_MAJOR).10
+MPD_VERSION = $(MPD_VERSION_MAJOR).12
 MPD_SOURCE = mpd-$(MPD_VERSION).tar.xz
 MPD_SITE = http://www.musicpd.org/download/mpd/$(MPD_VERSION_MAJOR)
 MPD_DEPENDENCIES = host-pkgconf boost libglib2
@@ -179,6 +179,12 @@ ifeq ($(BR2_PACKAGE_MPD_OSS),y)
 MPD_CONF_OPTS += --enable-oss
 else
 MPD_CONF_OPTS += --disable-oss
+endif
+
+ifeq ($(BR2_PACKAGE_MPD_PIPE),y)
+MPD_CONF_OPTS += --enable-pipe-output
+else
+MPD_CONF_OPTS += --disable-pipe-output
 endif
 
 ifeq ($(BR2_PACKAGE_MPD_PULSEAUDIO),y)

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+while (true); do
+	jack_connect OpenELEC:from_slave_1 brutefir:input-0
+	jack_connect OpenELEC:from_slave_2 brutefir:input-1
+	sleep 3
+done

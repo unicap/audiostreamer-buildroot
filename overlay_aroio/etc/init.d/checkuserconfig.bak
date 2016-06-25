@@ -1,0 +1,50 @@
+#!/bin/sh
+
+if ! [ -e /mnt/mmcblk0p1/userconfig.txt  ]
+then
+	echo "Keine userconfig.txt gefunden, lege eine an..."
+	mount -o remount,rw /mnt/mmcblk0p1
+	touch /mnt/mmcblk0p1/userconfig.txt
+	mount -o remount /mnt/mmcblk0p1/
+fi
+
+. /mnt/mmcblk0p1/userconfig.txt
+
+if [ "$UPDATESERVER" = "" ] ; then UPDATESERVER="www.abacus-electronics.de/aroio" ; fi
+if [ "$HOSTNAME" = "" ] || [ "$HOSTNAME" = "(none)" ] ; then HOSTNAME="AroioEX" ; fi
+if [ "$DHCP" = "" ] || [ "$DHCP" = "OFF" ] && [ "$IPADDR" = "" -o "$NETMASK" = "" -o DNSSERV = "" -o GATEWAY = "" ] ; then DHCP="ON" ; fi
+if [ "$DHCP" = "ON"  ]
+then
+	IPADDR=""
+	NETMASK=""
+	DNSSERV=""
+	GATEWAY=""
+fi
+
+# Folgende Variablen duerfen leer sein, aber beim Ausschreiben nicht vergessen werden...
+# SERVERNAME , SQUEEZEUSER , SQUEEZEPWD , SERVERPORT
+
+if [ "$PLAYERNAME" = "" ] || [ "$PLAYERNAME" = "(none)" ]  ; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$MSCODING" = "" ] ; then MSCODING="OFF" ; fi
+if [ "$VOLUME" = "" ] ; then VOLUME="0 dB" ; fi
+if [ "$ALSAOUTBUFF" = "" ] ; then ALSAOUTBUFF="8192" ; fi
+if [ "$ALSAPERIOD" = "" ] ; then ALSAPERIOD="1024" ; fi
+if [ "$ALSASAMPLEFMT" = "" ] ; then ALSASAMPLEFMT="24" ; fi
+if [ "$ALSAMMAP" = "" ] ; then ALSAMMAP="0" ; fi
+if [ "$STREAMBUFF" = "" ] ; then STREAMBUFF="1024" ; fi
+if [ "$DEBUG" = "" ] ; then DEBUG="OFF" ; fi
+if [ "$USERPASSWD" = "" ] ; then USERPASSWD="abacus" ; fi
+
+mount -o remount,rw /mnt/mmcblk0p1
+rm /mnt/mmcblk0p1/userconfig.txt
+
+for i in UPDATESERVER HOSTNAME DHCP IPADDR \
+NETMASK DNSSERV GATEWAY WLANSSID WLANPWD USERPASSWD SERVERNAME SQUEEZEUSER \
+SQUEEZEPWD SERVERPORT PLAYERNAME MSCODING VOLUME ALSAOUTBUFF \
+ALSAPERIOD ALSASAMPLEFMT ALSAMMAP STREAMBUFF DEBUG
+do
+	echo -n $i"="'"' >> /mnt/mmcblk0p1/userconfig.txt
+	eval echo \$$i'\"'   >> /mnt/mmcblk0p1/userconfig.txt
+done
+
+mount -o remount,ro /mnt/mmcblk0p1

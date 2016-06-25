@@ -1,0 +1,15 @@
+#!/bin/sh
+
+while (true)
+do
+	if ls /home/sftparoio/*.dbl &> /dev/null
+	then
+		echo "Convolver:   Found filters!"
+		cardmount rw
+		echo "Convolver:   Moving them to SD-card..."
+		mv /home/sftparoio/*.dbl /mnt/mmcblk0p1/brutefir &> /dev/null
+		cardmount ro
+
+	fi
+	sleep 1
+done

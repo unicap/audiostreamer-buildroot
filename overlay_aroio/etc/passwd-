@@ -1,0 +1,12 @@
+root:kdXm3MvohWcwg:0:0:root:/root:/bin/sh
+bin:x:1:1:bin:/dev/null:/bin/false
+daemon:x:6:6:Daemon User:/dev/null:/bin/false
+messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
+nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
+lfs::1000:999::/home/lfs:/bin/sh
+ntp:x:87:87:Network Time Protocol:/var/lib/ntp:/bin/false
+rsyncd:x:48:48:rsync Daemon:/home/rsync:/bin/false
+squeezeboxserver::999:998:Logitech Media Server:/usr/share/squeezeboxserver:/bin/sh
+audio::1001:999::/home/audio/:/bin/sh
+avahi:x:84:84:Avahi Daemon Owner:/var/run/avahi-daemon:/bin/false
+sftparoio:HH5ePoAn/e/FY:1002:11:Linux User,,,:/home/sftparoio:/bin/sh

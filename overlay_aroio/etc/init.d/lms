@@ -1,0 +1,67 @@
+#!/bin/sh
+
+export LANG=en_US.utf8
+export LD_LIBRARY_PATH=/lib
+
+pkill slimverver.pl
+pkill smbd
+pkill nmbd
+
+if [ "$1" = "extract" ] ; then
+	echo "System:      Unpacking LMS and Samba ..."
+		tar -x -C /opt -f /mnt/mmcblk0p1/perl.tgz &
+		tar -x -C /opt -f /mnt/mmcblk0p1/lms.tgz &
+		tar -x -C /opt -f /mnt/mmcblk0p1/samba.tgz &
+	while pgrep tar &> /dev/null ; do sleep 0.1 ; done
+	echo "System:      Finished unpacking LMS and Samba!"
+fi
+
+/sbin/ldconfig
+
+fs=""
+while [ -z $fs ] ; do fs=$(fdisk -l | tr -d '*' | awk '$1=="/dev/sda1" {print $5}') ; done
+
+case $fs in
+	7 )
+	echo "System:      Attached NTFS disk found, mounting it and starting Samba and LMS..."
+        ntfs-3g /dev/sda1 /home/audio &> /dev/null
+	;;
+
+	83 )
+	echo "System:      Attached ext2/3/4 disk found, mounting it and starting Samba and LMS..."
+	mount /dev/sda1 /home/audio &> /dev/null
+	;;
+
+	* )
+	echo "System:      No disk with a suitable filesystem found, not starting further services"
+	exit 1
+	;;
+esac
+
+if ! [ -e /home/audio/lms ] ; then mkdir -p /home/audio/lms/Cache ; fi
+if ! [ -e /home/audio/Audio ] ; then mkdir /home/audio/Audio ; fi
+
+chmod -R 777 /home/audio/lms
+chmod -R 777 /home/audio/Audio
+
+if cat /proc/mounts | grep "/home/audio" ; then 
+	chmod -R 777 /var/log
+	su squeezeboxserver -c "/opt/logitechmediaserver-7.7.2-33893-noCPAN/slimserver.pl --charset utf8 --daemon --user squeezeboxserver --prefsdir /home/audio/lms/prefs --cachedir /home/audio/lms/Cache --logdir /var/log " &> /dev/null 
+
+	mkdir -p /var/log/samba/cores
+	mkdir -p /var/cache/samba/lck
+	mkdir -p /var/lib/samba/private
+	mkdir /var/lock
+	mkdir -p /var/run/samba/ncalrpc
+	chmod -R 0700 /var/log/samba
+	chmod -R 0755 /var/cache/samba
+	chmod -R 0700 /var/lib/samba
+	chmod -R 0700 /var/lock
+	cp -a /root/*.tdb /var/lib/samba/private
+
+	/opt/samba4/usr/sbin/smbd
+	/opt/samba4/usr/sbin/nmbd
+
+# else	echo "System:      No Harddisk found, not starting LMS and Samba!"
+
+fi

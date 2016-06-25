@@ -1,0 +1,6 @@
+config BR2_PACKAGE_GMRENDER_RESURRECT
+	bool "gmrender-resurrect"
+	select BR2_PACKAGE_GSTREAMER1
+	help
+	  gmrender-resurrect implements a uPNP renderer.
+
