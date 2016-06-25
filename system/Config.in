@@ -101,6 +101,10 @@ comment "systemd needs (e)glibc toolchain, headers >= 3.10"
 
 config BR2_INIT_NONE
 	bool "None"
+	help
+	  Buildroot will not install any init system. You will
+	  have to provide your own, either with a new package
+	  or with a rootfs-overlay.
 
 endchoice
 
@@ -179,6 +183,11 @@ config BR2_ROOTFS_SKELETON_CUSTOM_PATH
 	default "system/skeleton"
 	help
 	  Path to custom target skeleton.
+
+# dummy config so merged /usr workarounds can also be activated for
+# custom rootfs skeleton
+config BR2_ROOTFS_MERGED_USR
+
 endif
 
 if BR2_ROOTFS_SKELETON_DEFAULT

@@ -7,6 +7,7 @@
 QT5BASE_VERSION = $(QT5_VERSION)
 QT5BASE_SITE = $(QT5_SITE)
 QT5BASE_SOURCE = qtbase-opensource-src-$(QT5BASE_VERSION).tar.xz
+QT5BASE_PATCH = https://github.com/qtproject/qtbase/commit/b8f98d956501dfa4ce03a137f15d404930a56066.patch
 
 QT5BASE_DEPENDENCIES = host-pkgconf zlib pcre
 QT5BASE_INSTALL_STAGING = YES
@@ -39,8 +40,8 @@ QT5BASE_CONFIGURE_OPTS += -largefile
 
 ifeq ($(BR2_PACKAGE_QT5BASE_LICENSE_APPROVED),y)
 QT5BASE_CONFIGURE_OPTS += -opensource -confirm-license
-QT5BASE_LICENSE = LGPLv2.1 with exception or LGPLv3
-QT5BASE_LICENSE_FILES = LICENSE.LGPLv21 LGPL_EXCEPTION.txt LICENSE.LGPLv3
+QT5BASE_LICENSE = GPLv3 or LGPLv2.1 with exception or LGPLv3, GFDLv1.3 (docs)
+QT5BASE_LICENSE_FILES = LICENSE.GPLv3 LICENSE.LGPLv21 LGPL_EXCEPTION.txt LICENSE.LGPLv3 LICENSE.FDL
 else
 QT5BASE_LICENSE = Commercial license
 QT5BASE_REDISTRIBUTE = NO
@@ -50,6 +51,10 @@ QT5BASE_CONFIG_FILE = $(call qstrip,$(BR2_PACKAGE_QT5BASE_CONFIG_FILE))
 
 ifneq ($(QT5BASE_CONFIG_FILE),)
 QT5BASE_CONFIGURE_OPTS += -qconfig buildroot
+endif
+
+ifeq ($(BR2_PACKAGE_HAS_UDEV),y)
+QT5BASE_DEPENDENCIES += udev
 endif
 
 # Qt5 SQL Plugins
@@ -110,10 +115,6 @@ endif
 
 QT5BASE_DEFAULT_QPA = $(call qstrip,$(BR2_PACKAGE_QT5BASE_DEFAULT_QPA))
 QT5BASE_CONFIGURE_OPTS += $(if $(QT5BASE_DEFAULT_QPA),-qpa $(QT5BASE_DEFAULT_QPA))
-
-ifeq ($(BR2_PACKAGE_IMX_GPU_VIV),y)
-QT5BASE_EXTRA_CFLAGS = -DENABLE_MX6_WORKAROUND
-endif
 
 ifeq ($(BR2_PACKAGE_QT5BASE_EGLFS),y)
 QT5BASE_CONFIGURE_OPTS += -eglfs
@@ -179,6 +180,10 @@ endef
 endif
 
 define QT5BASE_CONFIGURE_CMDS
+	$(INSTALL) -m 0644 -D $(QT5BASE_PKGDIR)/qmake.conf \
+		$(@D)/mkspecs/devices/linux-buildroot-g++/qmake.conf
+	$(INSTALL) -m 0644 -D $(QT5BASE_PKGDIR)/qplatformdefs.h \
+		$(@D)/mkspecs/devices/linux-buildroot-g++/qplatformdefs.h
 	$(QT5BASE_CONFIGURE_CONFIG_FILE)
 	(cd $(@D); \
 		$(TARGET_MAKE_ENV) \

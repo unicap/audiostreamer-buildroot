@@ -4,15 +4,14 @@
 #
 ################################################################################
 
-IRSSI_VERSION = 0.8.17
-IRSSI_SOURCE = irssi-$(IRSSI_VERSION).tar.bz2
-# Official web site is down
-# IRSSI_SITE = http://irssi.org/files
-IRSSI_SITE = http://pkgs.fedoraproject.org/repo/pkgs/irssi/$(IRSSI_SOURCE)/ecf64be47978d89a742b435a81cb47db
+IRSSI_VERSION = 0.8.18
+IRSSI_SOURCE = irssi-$(IRSSI_VERSION).tar.xz
+# Do not use the github helper here. The generated tarball is *NOT* the
+# same as the one uploaded by upstream for the release.
+IRSSI_SITE = https://github.com/irssi/irssi/releases/download/$(IRSSI_VERSION)
 IRSSI_LICENSE = GPLv2+
 IRSSI_LICENSE_FILES = COPYING
-IRSSI_DEPENDENCIES = libglib2 ncurses
-IRSSI_AUTORECONF = YES
+IRSSI_DEPENDENCIES = host-pkgconf libglib2 ncurses
 
 IRSSI_CONF_OPTS = \
 	--disable-glibtest \

@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LFTP_VERSION = 4.6.4
+LFTP_VERSION = 4.7.2
 LFTP_SOURCE = lftp-$(LFTP_VERSION).tar.xz
 LFTP_SITE = http://lftp.yar.ru/ftp
 LFTP_LICENSE = GPLv3+
@@ -13,8 +13,19 @@ LFTP_LICENSE_FILES = COPYING
 LFTP_AUTORECONF = YES
 LFTP_DEPENDENCIES = readline zlib host-pkgconf
 
+# Help lftp finding readline and zlib
+LFTP_CONF_OPTS = \
+	--with-readline=$(STAGING_DIR)/usr \
+	--with-readline-inc=$(STAGING_DIR)/usr/include/readline \
+	--with-readline-lib=$(STAGING_DIR)/usr/lib \
+	--with-zlib=$(STAGING_DIR)/usr
+
 ifneq ($(BR2_STATIC_LIBS),y)
 LFTP_CONF_OPTS += --with-modules
+endif
+
+ifeq ($(BR2_PACKAGE_EXPAT)$(BR2_PACKAGE_LFTP_PROTO_HTTP),yy)
+LFTP_DEPENDENCIES += expat
 endif
 
 ifeq ($(BR2_PACKAGE_GNUTLS),y)

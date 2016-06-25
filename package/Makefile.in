@@ -122,6 +122,9 @@ endif
 ifeq ($(BR2_OPTIMIZE_3),y)
 TARGET_OPTIMIZATION = -O3
 endif
+ifeq ($(BR2_OPTIMIZE_G),y)
+TARGET_OPTIMIZATION = -Og
+endif
 ifeq ($(BR2_OPTIMIZE_S),y)
 TARGET_OPTIMIZATION = -Os
 endif
@@ -145,7 +148,7 @@ TARGET_CFLAGS += $(if $($(PKG)_FLAT_STACKSIZE),-Wl$(comma)-elf2flt=-s$($(PKG)_FL
 	-Wl$(comma)-elf2flt)
 TARGET_CXXFLAGS += $(if $($(PKG)_FLAT_STACKSIZE),-Wl$(comma)-elf2flt=-s$($(PKG)_FLAT_STACKSIZE),\
 	-Wl$(comma)-elf2flt)
-TARGET_LDFLAGS += $(if $($(PKG)_FLAT_STACKSIZE),-elf2flt=-s$($(PKG)_FLAT_STACKSIZE),-elf2flt)
+TARGET_LDFLAGS += $(if $($(PKG)_FLAT_STACKSIZE),-Wl$(comma)-elf2flt=-s$($(PKG)_FLAT_STACKSIZE),-Wl$(comma)-elf2flt)
 endif
 
 ifeq ($(BR2_BINFMT_FLAT_SHARED),y)
@@ -159,7 +162,13 @@ TARGET_CFLAGS += -msep-data
 TARGET_CXXFLAGS += -msep-data
 endif
 
-ifeq ($(BR2_ENABLE_SSP),y)
+ifeq ($(BR2_SSP_REGULAR),y)
+TARGET_CFLAGS += -fstack-protector
+TARGET_CXXFLAGS += -fstack-protector
+else ifeq ($(BR2_SSP_STRONG),y)
+TARGET_CFLAGS += -fstack-protector-strong
+TARGET_CXXFLAGS += -fstack-protector-strong
+else ifeq ($(BR2_SSP_ALL),y)
 TARGET_CFLAGS += -fstack-protector-all
 TARGET_CXXFLAGS += -fstack-protector-all
 endif
@@ -192,14 +201,6 @@ TARGET_STRIP = $(TARGET_CROSS)strip
 STRIPCMD = $(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 KSTRIPCMD = $(STRIPCMD) $(STRIP_STRIP_UNNEEDED)
 endif
-ifeq ($(BR2_STRIP_sstrip),y)
-STRIP_STRIP_DEBUG :=
-STRIP_STRIP_UNNEEDED :=
-STRIP_STRIP_ALL :=
-TARGET_STRIP = $(HOST_DIR)/usr/bin/$(GNU_TARGET_NAME)-sstrip
-STRIPCMD = $(TARGET_STRIP)
-KSTRIPCMD = $(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note --strip-unneeded
-endif
 ifeq ($(BR2_STRIP_none),y)
 TARGET_STRIP = true
 STRIPCMD = $(TARGET_STRIP)
@@ -218,10 +219,6 @@ HOST_CFLAGS   ?= -O2
 HOST_CFLAGS   += $(HOST_CPPFLAGS)
 HOST_CXXFLAGS += $(HOST_CFLAGS)
 HOST_LDFLAGS  += -L$(HOST_DIR)/lib -L$(HOST_DIR)/usr/lib -Wl,-rpath,$(HOST_DIR)/usr/lib
-
-# hostcc version as an integer - E.G. 4.3.2 => 432
-HOSTCC_VERSION := $(shell $(HOSTCC_NOCCACHE) --version | \
-	sed -n 's/^.* \([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)[ ]*.*$$/\1\2\3/p')
 
 # host-intltool should be executed with the system perl, so we save
 # the path to the system perl, before a host-perl built by Buildroot
@@ -296,12 +293,10 @@ HOST_CONFIGURE_OPTS = \
 	PKG_CONFIG="$(PKG_CONFIG_HOST_BINARY)" \
 	PKG_CONFIG_SYSROOT_DIR="/" \
 	PKG_CONFIG_LIBDIR="$(HOST_DIR)/usr/lib/pkgconfig:$(HOST_DIR)/usr/share/pkgconfig" \
-	LD_LIBRARY_PATH="$(HOST_DIR)/usr/lib$(if $(LD_LIBRARY_PATH),:$(LD_LIBRARY_PATH))" \
 	INTLTOOL_PERL=$(PERL)
 
 HOST_MAKE_ENV = \
 	PATH=$(BR_PATH) \
-	LD_LIBRARY_PATH="$(HOST_DIR)/usr/lib$(if $(LD_LIBRARY_PATH),:$(LD_LIBRARY_PATH))" \
 	PKG_CONFIG="$(PKG_CONFIG_HOST_BINARY)" \
 	PKG_CONFIG_SYSROOT_DIR="/" \
 	PKG_CONFIG_LIBDIR="$(HOST_DIR)/usr/lib/pkgconfig"
@@ -340,6 +335,15 @@ else
 BR2_AC_CV_C_BIGENDIAN = ac_cv_c_bigendian=no
 endif
 
+# AM_GNU_GETTEXT misdetects musl gettext support.
+# musl currently implements api level 1 and 2 (basic + ngettext)
+# http://www.openwall.com/lists/musl/2015/04/16/3
+ifeq ($(BR2_TOOLCHAIN_USES_MUSL),y)
+BR2_GT_CV_FUNC_GNUGETTEXT_LIBC = \
+	gt_cv_func_gnugettext1_libc=yes \
+	gt_cv_func_gnugettext2_libc=yes
+endif
+
 TARGET_CONFIGURE_ARGS = \
 	$(BR2_AC_CV_TRAP_CHECK) \
 	ac_cv_func_mmap_fixed_mapped=yes \
@@ -350,7 +354,8 @@ TARGET_CONFIGURE_ARGS = \
 	ac_cv_func_calloc_0_nonnull=yes \
 	ac_cv_func_realloc_0_nonnull=yes \
 	lt_cv_sys_lib_search_path_spec="" \
-	$(BR2_AC_CV_C_BIGENDIAN)
+	$(BR2_AC_CV_C_BIGENDIAN) \
+	$(BR2_GT_CV_FUNC_GNUGETTEXT_LIBC)
 
 ################################################################################
 

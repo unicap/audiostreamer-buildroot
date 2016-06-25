@@ -5,16 +5,9 @@
 ################################################################################
 
 GLIBC_VERSION = $(call qstrip,$(BR2_GLIBC_VERSION_STRING))
-
-ifeq ($(BR2_TOOLCHAIN_BUILDROOT_EGLIBC),y)
-GLIBC_SITE = http://downloads.yoctoproject.org/releases/eglibc
-GLIBC_SOURCE = eglibc-$(GLIBC_VERSION).tar.bz2
-GLIBC_SRC_SUBDIR = libc
-else
 GLIBC_SITE = $(BR2_GNU_MIRROR)/libc
 GLIBC_SOURCE = glibc-$(GLIBC_VERSION).tar.xz
 GLIBC_SRC_SUBDIR = .
-endif
 
 GLIBC_LICENSE = GPLv2+ (programs), LGPLv2.1+, BSD-3c, MIT (library)
 GLIBC_LICENSE_FILES = $(addprefix $(GLIBC_SRC_SUBDIR)/,COPYING COPYING.LIB LICENSES)
@@ -96,6 +89,7 @@ define GLIBC_CONFIGURE_CMDS
 		--disable-profile \
 		--without-gd \
 		--enable-obsolete-rpc \
+		--enable-kernel=$(call qstrip,$(BR2_TOOLCHAIN_HEADERS_AT_LEAST)) \
 		--with-headers=$(STAGING_DIR)/usr/include)
 	$(GLIBC_ADD_MISSING_STUB_H)
 endef
@@ -117,7 +111,7 @@ endif
 
 define GLIBC_INSTALL_TARGET_CMDS
 	for libs in $(GLIBC_LIBS_LIB); do \
-		$(call copy_toolchain_lib_root,$(STAGING_DIR)/,,lib,$$libs,/lib) ; \
+		$(call copy_toolchain_lib_root,$$libs) ; \
 	done
 endef
 
