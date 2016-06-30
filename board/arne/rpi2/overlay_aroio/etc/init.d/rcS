@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Source our userconfig
+
+CONFIG=/mnt/mmcblk0p1/userconfig.txt
+
+if [ -e ${CONFIG} ];
+then
+    . ${CONFIG}
+else
+    echo "No userconfig, using defaults"
+    . /etc/userconfig_default.txt
+fi
+
+
+
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+for i in /etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     # Source shell script to pass user config
+     (
+	 trap - INT QUIT TSTP
+	 set start
+	 . $i
+     )
+done
+
+# run mode script
+
+/etc/init.d/rcS_M

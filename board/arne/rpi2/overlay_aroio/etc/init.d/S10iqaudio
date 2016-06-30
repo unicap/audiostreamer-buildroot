@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# load modules required by iqaudio Pi-DAC+
+
+case "$1" in
+    start|"")
+	modprobe snd_soc_bcm2708_i2s
+	modprobe snd_soc_pcm512x
+	modprobe snd_soc_pcm512x_i2c
+	modprobe i2c_bcm2708
+	modprobe snd_soc_iqaudio_dac
+	;;
+    stop) ;;
+    *)
+	echo "Usage: $0 {start|stop}" >&2
+	exit 1
+	;;
+esac

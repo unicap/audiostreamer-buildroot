@@ -1,0 +1,38 @@
+#!/bin/sh
+
+BINARY=/usr/bin/squeezelite-jack
+ARGS=-R
+PIDFILE=/var/run/squeezelite.pid
+
+# Sanity checks
+test -f $BINARY || exit 0
+
+start() {
+	printf "Starting $BINARY: "
+	start-stop-daemon --start --quiet --background -m --pidfile $PIDFILE \
+			  --exec $BINARY -- $ARGS \
+		&& echo "OK" || echo "FAIL"
+}
+
+stop() {
+	printf "Stopping $BINARY: "
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE \
+		&& echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac

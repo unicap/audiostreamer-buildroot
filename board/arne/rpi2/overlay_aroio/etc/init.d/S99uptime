@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Sanity checks
+test -f $BINARY || exit 0
+
+start() {
+	printf "Measuring uptime: "
+	echo "Step: $0" >> /tmp/boottime.txt
+	uptime >> /tmp/boottime.txt && echo "OK" || echo "FAIL"
+}
+
+stop() {
+    true
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac

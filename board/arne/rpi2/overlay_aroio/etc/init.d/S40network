@@ -1,0 +1,148 @@
+#!/bin/sh
+
+CONFIG=/mnt/mmcblk0p1/userconfig.txt
+
+if [ -e ${CONFIG} ];
+then
+    . /mnt/mmcblk0p1/userconfig.txt
+else
+    echo "No userconfig, using defaults"
+    . /etc/userconfig_default.txt
+fi
+
+hostname "$HOSTNAME"
+
+hostap()
+{
+	if [ "$WLANSSID" = "" ] || [ "$WLANSSID" = "Aroio-Access-Point"  ]
+	then
+		HOSTAP=true
+		MACADDR=$(cat /sys/class/net/wlan0/address)
+		APNETWORK="aroio-$MACADDR"
+		echo "Network:     Wireless network interface found but unconfigured,"
+		echo "             opening Wireless-Network $APNETWORK with IP-address 192.168.99.1"
+		echo "ssid=$APNETWORK" >> /etc/hostapd.conf
+		ifconfig wlan0 192.168.99.1 up
+		route add -net 224.0.0.0 netmask 240.0.0.0 dev wlan0
+		udhcpd -S -I 192.168.99.1 /etc/udhcpd.conf
+		hostapd -B /etc/hostapd.conf &> /dev/null
+	fi
+}
+
+wlan()
+{
+	if ! [ "$HOSTAP" = "true" ]
+	then
+		echo "Network:     No ethernet connected, configuring WiFi for configured network "\"$WLANSSID"\"..."
+		ifconfig wlan0 up
+		iwlist wlan0 scan > /var/wirelesscan
+		if ! grep -q "$WLANSSID" /var/wirelesscan
+		then
+			echo "Network:     Configured network not available, exiting!"
+			exit
+		fi
+		if cat /var/wirelesscan | sed -n "/\"$WLANSSID\"/,/Quality/p" | grep -q "Encryption key:on"
+		then
+			echo "Network:     The Network \""$WLANSSID"\"is encrypted, let's figure how..."
+			if cat /var/wirelesscan | sed -n "/\"$WLANSSID\"/,/Quality/p" | grep -i -q "WPA"
+			then
+				echo "             It uses WPA encryption, configuring it for that..."
+				connect_wpa
+			else echo "             It uses WEP encryption,configuring it for that..."
+				connect_wep
+			fi
+		else
+			echo "             Oh my, it uses no encryption, bad idea, configuring it for that..."
+			connect_open
+	fi	fi
+}
+
+connect_open()
+{
+	echo "             Setting up connection to unencrypted netword \""$WLANSSID"\" now."
+	ifconfig wlan0 up
+	iwconfig wlan0 mode managed
+	iwconfig wlan0 essid "$WLANSSID"
+	udhcpc -b -i wlan0 -x hostname  "$HOSTNAME"
+}
+
+connect_wep()
+{
+	echo "             Setting up connection to WEP encrypted network \""$WLANSSID"\" now.."
+	ifconfig wlan0 up
+	iwconfig wlan0 essid "$WLANSSID"
+	## Works with "shared key in hex!"
+	iwconfig wlan0 key "$WLANPWD"
+	iwconfig wlan0 mode managed
+	udhcpc -b -i wlan0 -x hostname  "$HOSTNAME"
+}
+
+connect_wpa()
+{
+	echo "             Setting up connection to WPA encrypted network \""$WLANSSID"\" now."
+	wpa_passphrase "$WLANSSID" "$WLANPWD" > /var/wpa_supplicant.conf
+	wpa_supplicant -B -Dwext -iwlan0 -c /var/wpa_supplicant.conf 
+	udhcpc -b -i wlan0 -x hostname: "$HOSTNAME" > /dev/null &> /dev/null
+}
+
+eth_dhcp()
+{
+	echo "             using dhcp as requested per userconfig-file..."
+	udhcpc -b -i eth0 -x hostname:"$HOSTNAME" > /dev/null &> /dev/null
+	if [ "$WLAN" = "true"  ]
+	then
+		ifconfig wlan0 up
+	fi
+}
+
+eth_manual()
+{
+	sleep 0.5
+	echo "             manually as requested per userconfig-file"
+	ifconfig eth0 "$IPADDR" netmask "$NETMASK" up
+	echo "nameserver "$DNSSERV"" > /etc/resolv.conf
+	route add default gw "$GATEWAY"
+	if [ "$WLAN" = "true" ]
+	then
+		ifconfig wlan0 up
+	fi
+}
+
+ifconfig lo up
+until $(ifconfig eth0 up &> /dev/null)
+do
+	sleep 0.3 # ; echo "waiting for eth0 to initialize..."
+done
+
+if [ "$DHCP" = "ON" ]
+then echo "Network:     DHCP is ON"
+	sleep 2
+	if  (dmesg | grep WLAN)
+	then
+		hostap
+	else
+       	echo "Network:     No wireless network interface found, wireless options not available."
+		WLAN="false"
+	fi
+
+	if [ "$(cat /sys/class/net/eth0/carrier)" = "1" ]
+	then
+		echo "Network:     Ethernet connected, configuring wired interface (eth0)"
+		if [ "$DHCP" = "ON" ]
+		then
+			eth_dhcp
+		fi
+	else
+		wlan
+	fi
+else
+	eth_manual
+fi
+
+ETHADDR=$(ifconfig | grep -A 2 eth0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }')
+WLANADDR=$(ifconfig | grep -A 2 wlan0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }')
+
+
+echo "Network:     Our hostname  : $(hostname)"
+echo "             Our eth0-IP-address:  $ETHADDR"
+echo "             Our wlan0-IP-address: $WLANADDR"
