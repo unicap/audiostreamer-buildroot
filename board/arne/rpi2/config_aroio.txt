@@ -1,0 +1,6 @@
+dtdebug=1
+max_usb_current=1
+disable_splash=1
+kernel=zImage
+disable_overscan=1
+#ni_audio8dj
