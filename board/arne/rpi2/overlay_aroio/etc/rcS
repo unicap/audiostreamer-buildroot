@@ -28,7 +28,6 @@ echo "System:      We are aroio Version $(cat /mnt/mmcblk0p1/version)!"
 
 mount none -t tmpfs -o defaults /var
 mount none -t tmpfs -o defaults /tmp
-mount none -t tmpfs -o defaults /opt
 mount none -t tmpfs -o defaults /home/sftparoio
 
 mkdir /dev/shm
