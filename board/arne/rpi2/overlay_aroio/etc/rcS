@@ -38,8 +38,6 @@ mkdir -p /var/run/dbus
 export LANG=en_US.utf8
 /etc/init.d/lms extract &
 
-cp -a /root/www /opt
-
 mkdir /var/log
 
 /etc/init.d/checklms &
