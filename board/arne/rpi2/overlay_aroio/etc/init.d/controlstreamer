@@ -1,0 +1,95 @@
+#!/bin/sh
+. /mnt/mmcblk0p1/userconfig.txt
+
+export LD_LIBRARY_PATH=/lib
+
+# Debugging immer an lassen, um LMS-Status greppen zu koennen
+DEBUG="ON"
+
+EthAddr()
+{
+	ETHADDR=$(ifconfig | grep -A 2 eth0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }')
+}
+
+WlanAddr()
+{
+	WLANADDR=$(ifconfig | grep -A 2 wlan0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }')
+}
+
+StartJack()
+{
+	jackd -R -P 10 -dalsa -P -dhw:0 -r96000 -p 1024 -n2 &> /var/log/jackd.log \
+	&& message "Controlstreamer" "jackd started" \
+	|| message "Controlstreamer" "Could not start jackd, please check the logfile for details.."
+}
+
+StartBrutefir()
+{
+	/etc/init.d/brutefir \ # Don't forget to take jackd and brutefir out of there once THIS script takes over...
+	&& message "Controlstreamer" "brutefir started" \
+	|| message "Controlstreamer" "Could not start brutefir, please check the logfile for details.."
+}
+
+StartShairport()
+{
+	until ! [ "$ETHADDR" = "" ] || ! [ "$WLANADDR" = "" ]
+	do
+		message "Controlstreamer" "Shairport waiting for network configuration..."
+		ethaddr
+		wlanaddr
+		sleep 0.3
+	done
+
+	message "Controlstreamer" "Shairport starting up..."
+
+	if ! [ -e /var/log/shairportlog.txt ] ; then touch /var/log/shairportlog.txt ; fi
+
+	shairport-sync -v -w -B /usr/bin/shairport-sync-startaction -E /usr/bin/shairport-sync-stopaction \
+	-a "$PLAYERNAME" -o alsa -- -d stereo &> /var/log/shairportlog.txt
+}
+
+StartSqueeze()
+{
+	if grep 1 /sys/class/net/eth0/carrier &> /dev/null
+	then	MACADDR=$(cat /sys/class/net/eth0/address)
+	else	MACADDR=$(cat /sys/class/net/wlan0/address)
+	fi
+
+	# squeezelite buffer parameters:
+	#   -a <b>:<p>:<t>:<m>
+	#      b = buffer size in Bytes or ms (if smaller 500), default 40
+	#      p = period count (if < 50) or size in Bytes, default 4 periods
+	#      f = sample format (16|24|24_3|32)
+	#      m = use mmap
+	#
+	#   -b <streambuffer>:<outputbufer>
+	#      internal stream and output buffer sizes in kilobytes, default is close to 2048:3446
+	#   -r sample rates  supported  by the output device, must be different for stereo than for jackplug!!!
+	#      -r 96000 menas max supported rate, resample all above
+	#      -r 96000-96000 means resample anything but 96000
+
+		OUTPUTARAMS="-a ::32:1"
+		RATE=""
+		RESAMPLE=""
+
+#		if [ "$MSCODING" = "ON" ]
+#		then	echo "             ms-coded!"
+#		else	echo "             stereo!"
+#		fi
+#		PLAYER="squeezelite-jack -a brutefir"
+#		OUTPUTPARAMS="-a brutefir"
+#		OUTPUT=""
+#		RATE="-r 96000-96000"
+#		RESAMPLE="-R -u hL"
+
+	squeezelite -p 99 -m "$MACADDR" -n "$PLAYERNAME" -s "$SERVERNAME" -z \
+	-o stereo -d all=info -f /var/log/squeezelitelog.txt $RATE $RESAMPLE
+}
+
+#while (true)
+#do
+#	if [ "$BRUTEFIR" = "ON" ] ; then until pgrep -x brutefir &> /dev/null ; do sleep 0.2 ; done ; fi
+#	if ! pgrep -x squeezelite &> /dev/null ;    then squeeze ; fi
+#	sleep 1
+#	if ! pgrep -x shairport-sync &> /dev/null ; then shair ; fi
+#done

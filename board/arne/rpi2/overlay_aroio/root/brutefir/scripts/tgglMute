@@ -1,0 +1,5 @@
+#!/bin/sh
+# Brutefir Volume Control
+# tmo  -- toggle mute output.
+# 	      tmo <output>
+`echo 'tmo' $1 | nc 127.0.0.1 3000` 2>>/dev/null

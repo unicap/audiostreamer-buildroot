@@ -1,0 +1,67 @@
+compress
+
+/var/log/jackd.log {
+        su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/squeezelitelog.txt {
+	su root root
+	rotate 5
+	size=2M
+	copytruncate
+	}
+
+/var/log/shairportlog.txt {
+	su root root
+	rotate 5
+	size=2M
+	copytruncate
+	}
+
+/var/log/aroiolog {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/spotifyd.log {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/shairport.log {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/scanner.log {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/server.log {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+/var/log/brutefir.log {
+	su root root
+        rotate 5
+        size=2M
+        copytruncate
+        }
+
+
+

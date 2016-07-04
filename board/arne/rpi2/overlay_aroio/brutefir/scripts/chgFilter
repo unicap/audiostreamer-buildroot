@@ -1,0 +1,8 @@
+#!/bin/sh
+# Brutefir Volume Control
+# cfc  -- change filter coefficients.
+# 	      cfc <filter> <coeff>
+# $1 = filter
+# $2 = coeff
+
+`echo 'cfc' $1 $2 | nc localhost 3000` 2>>/dev/null

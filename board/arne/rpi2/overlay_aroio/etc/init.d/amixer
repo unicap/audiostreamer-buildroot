@@ -1,0 +1,42 @@
+#!/bin/sh
+
+. /mnt/mmcblk0p1/userconfig.txt
+
+case $VOLUME in
+	"0 dB")
+	VALUE="207"
+	;;
+
+	"-1 dB")
+	VALUE="205"
+	;;
+
+	"-2 dB")
+	VALUE="203"
+	;;
+
+	"-3 dB")
+	VALUE="201"
+	;;
+
+	"-4 dB")
+	VALUE="199"
+	;;
+
+	"-5 dB")
+	VALUE="197"
+	;;
+
+	"-6 dB")
+	VALUE="195"
+	;;
+
+	"-12 dB")
+	VALUE="183"
+	;;
+esac
+
+if [ "$BRUTEFIR" = "OFF" ] ; then VALUE=$((VALUE - 3)) ; fi
+
+echo "Mixer:       Setting master output volume to $VOLUME."
+amixer sset 'Digital' "$VALUE" &> /dev/null

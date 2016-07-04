@@ -1,0 +1,119 @@
+#!/bin/sh
+
+# Check for userconfig.txt and if none found, create empty one
+if ! [ -e /mnt/mmcblk0p1/userconfig.txt  ]
+then
+	echo "ChkUsercfg:  Keine userconfig.txt gefunden, lege eine an..."
+	mount -o remount,rw /mnt/mmcblk0p1
+	touch /mnt/mmcblk0p1/userconfig.txt
+	mount -o remount,ro /mnt/mmcblk0p1/
+fi
+
+# Check, if following values are correct, if not, correct them
+. /mnt/mmcblk0p1/userconfig.txt
+if [ "$UPDATESERVER" = "" ] || [ "$UPDATESERVER" = "www.abacus-electronics.de/aroio"  ] ; then UPDATESERVER="www.abacus-electronics.de/aroio2" ; fi
+if [ "$BETASERVER" = "" ] ; then BETASERVER="www.abacus-electronics.de/aroio-beta" ; fi
+if [ "$SOUNDCARD" = "" ] ; then SOUNDCARD="IQAudIO DAC" ; fi
+if [ "$JACKBUFFER" = "" ] ; then JACKBUFFER="8192" ; fi
+if [ "$RATE" != "44" ] && [ "$RATE" != "48" ] && [ "$RATE" != "96" ]; then RATE="96" ; fi
+if [ "$USEBETA" = ""  ] ; then USEBETA="OFF" ; fi
+if [ "$HOSTNAME" = "" ] || [ "$HOSTNAME" = "(none)" ] ; then HOSTNAME="aroio" ; fi
+if [ "$PLAYERNAME" = "" ] || [ "$PLAYERNAME" = "(none)" ] ; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$DHCP" = "" ] || [ "$DHCP" = "OFF" ] && [ "$IPADDR" = "" -o "$NETMASK" = "" -o DNSSERV = "" -o GATEWAY = "" ] ; then DHCP="ON" ; fi
+if [ "$DHCP" = "ON"  ]
+then
+	IPADDR=""
+	NETMASK=""
+	DNSSERV=""
+	GATEWAY=""
+fi
+
+# In case the following variables are empty, write proper defaults
+# These variables can be empty but must not be forgoten when
+# writing to userconfig.txt: SERVERNAME , SQUEEZEUSER , SQUEEZEPWD , SERVERPORT
+
+if [ "$PLAYERNAME" = ""  ] 	; then PLAYERNAME="$HOSTNAME" ; fi
+if [ "$AUDIOPLAYER" = ""  ]	; then AUDIOPLAYER="squeezelite" ; fi
+if [ "$MSCODING" = "" ] 	; then MSCODING="OFF" ; fi
+if [ "$VOLUME" = "" ] 		; then VOLUME="0 dB" ; fi
+if [ "$DEBUG" = "" ]		; then DEBUG="OFF" ; fi
+if [ "$USERPASSWD" = "" ]	; then USERPASSWD="abacus" ; fi
+if [ "$BRUTEFIR" = "" ]		; then BRUTEFIR="OFF" ; fi
+if [ "$CHANNELS" = "" ]		; then CHANNELS="2" ; fi
+
+# Set proper defaults also here...
+if [ "$DEF_COEFF" = "" ]	; then DEF_COEFF="0" ; fi
+if [ "$COEFF_ATT0" = "" ]	; then COEFF_ATT="0" ; fi
+if [ "$COEFF_DELAY0" = "" ]	; then COEFF_DELAY="1" ; fi
+if [ "$DEF_SCOEFF" = "" ]	; then DEF_SCOEFF="0" ; fi
+if [ "$SCOEFF_ATT0" = "" ]	; then SCOEFF_ATT="0" ; fi
+if [ "$SCOEFF_DELAY0" = "" ]	; then SCOEFF_DELAY="0" ; fi
+
+#Set Att to 0 if empty
+for seq in $(seq 0 1 9);
+do
+	eval COEFF_ATT='COEFF_ATT$seq'
+	COEFF_ATT=$(eval echo \$$COEFF_ATT)
+
+	if [ "$COEFF_ATT" = "" ] ; then
+		eval COEFF_ATT$seq="0"
+	fi
+
+	eval SCOEFF_ATT='SCOEFF_ATT$seq'
+	SCOEFF_ATT=$(eval echo \$$SCOEFF_ATT)
+
+	if [ "$SCOEFF_ATT" = "" ] ; then
+		eval SCOEFF_ATT$seq="0"
+	fi
+done
+
+#Set delay to 0 if empty
+for seq in $(seq 0 1 9);
+do
+	eval COEFF_DELAY='COEFF_DELAY$seq'
+	COEFF_DELAY=$(eval echo \$$COEFF_DELAY)
+
+	if [ "$COEFF_DELAY" = "" ] ; then
+		eval COEFF_DELAY$seq="0"
+	fi
+
+	eval SCOEFF_DELAY='SCOEFF_DELAY$seq'
+	SCOEFF_DELAY=$(eval echo \$$SCOEFF_DELAY)
+
+	if [ "$SCOEFF_DELAY" = "" ] ; then
+		eval SCOEFF_DELAY$seq="0"
+	fi
+done
+
+## Write everything to a temporary userconfig.txt
+rm /tmp/userconfig.txt &> /dev/null
+for i in UPDATESERVER BETASERVER USEBETA HOSTNAME DHCP IPADDR \
+NETMASK DNSSERV GATEWAY WLANSSID WLANPWD USERPASSWD SERVERNAME SERVERPORT SQUEEZEUSER \
+SQUEEZEPWD PLAYERNAME AUDIOPLAYER RATE CHANNELS MSCODING VOLUME JACKBUFFER SOUNDCARD DEBUG \
+BRUTEFIR DEF_COEFF DEF_SCOEFF \
+$(for seq in $(seq 0 1 9); do echo COEFF_NAME$seq;done) \
+$(for seq in $(seq 0 1 9); do echo SCOEFF_NAME$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_COMMENT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo SCOEFF_COMMENT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_ATT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo SCOEFF_ATT$seq;done) \
+$(for seq in $(seq 0 1 9); do echo COEFF_DELAY$seq;done) \
+$(for seq in $(seq 0 1 9); do echo SCOEFF_DELAY$seq;done)
+do
+	seq=$((seq+1))
+	echo -n $i"="'"' >> /tmp/userconfig.txt
+	eval echo \$$i'\"'   >> /tmp/userconfig.txt
+done
+
+#exit
+
+## Compare the new userconfig.txt with the one on /tmp and copy it over, if it has changed
+if ! diff /tmp/userconfig.txt /mnt/mmcblk0p1/userconfig.txt &> /dev/null
+then
+	echo "ChkUsercfg:  Had to make changes to userconfig.txt, writing a new one to disk..."
+	cardmount rw
+	cp /tmp/userconfig.txt /mnt/mmcblk0p1/
+	cardmount ro
+else
+	echo "ChkUsercfg:  userconfig.txt is good, doing nothing here."
+fi

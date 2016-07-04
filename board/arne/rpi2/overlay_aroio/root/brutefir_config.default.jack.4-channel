@@ -1,0 +1,130 @@
+## GENERAL ##
+sampling_rate: 48000;
+#filter_length: 65536;
+filter_length: 32763/2;
+overflow_warnings: true;
+show_progress: true;
+max_dither_table_size: 0;
+allow_poll_mode: false;
+powersave: false;
+monitor_rate: false;
+lock_memory: true;
+sdf_length: -1;
+logic: "cli" { port: 3000; };
+
+## FILTER DEFINITIONS ##
+## Set 0
+coeff"left0"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right0"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft0"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright0"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 1
+coeff"left1"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right1"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft1"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright1"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 2
+coeff"left2"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right2"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft2"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright2"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 3
+coeff"left3"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right3"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft3"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright3"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 4
+coeff"left4"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right4"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft4"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright4"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 5
+coeff"left5"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right5"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft5"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright5"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 6
+coeff"left6"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right6"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft6"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright6"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 7
+coeff"left7"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right7"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft7"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright7"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 8
+coeff"left8"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right8"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft8"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright8"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## Set 9
+coeff"left9"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"right9"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+coeff"sleft9"{filename:"/home/sftparoio/BypassFilterL96.dbl";  format: "FLOAT64_LE"; };
+coeff"sright9"{filename:"/home/sftparoio/BypassFilterR96.dbl"; format: "FLOAT64_LE"; };
+
+## INPUTS / OUTPUTS ##
+input "left" , "right" , "sleft" , "sright" {
+        device: "jack" { ports: "" , "" , "" , ""; };
+	sample: "AUTO";
+        channels: 4;
+};
+
+output "left" , "right" , "sleft" , "sright" {
+        device: "jack" { ports: "system:playback_1" , "system:playback_2" , "system:playback_3" , "system:playback_4" ; };
+	sample: "AUTO";
+        channels: 4;
+        delay: 0 , 0 , 0 , 0;
+	maxdelay: 8000;
+};
+
+## FILTERS ##
+## L
+filter "left" {
+        from_inputs: "left";
+####### Do NOT change the following line by a char!!!
+        to_outputs:"left"/0/1;
+	process: -1;
+####### Do NOT change the following line by a char!!!
+	coeff:"left0";
+};
+
+## R
+filter "right" {
+        from_inputs: "right";
+####### Do NOT change the following line by a char!!!
+        to_outputs:"right"/0/1;
+	process: -1;
+####### Do NOT change the following line by a char!!!
+	coeff:"right0";
+};
+
+## SL
+filter "sleft" {
+        from_inputs: "sleft";
+####### Do NOT change the following line by a char!!!
+        to_outputs:"sleft"/0/1;
+	process: -1;
+####### Do NOT change the following line by a char!!!
+	coeff:"sleft0";
+};
+
+## SR
+filter "sright" {
+        from_inputs: "sright";
+####### Do NOT change the following line by a char!!!
+        to_outputs:"sright"/0/1;
+	process: -1;
+####### Do NOT change the following line by a char!!!
+	coeff:"sright0";
+};

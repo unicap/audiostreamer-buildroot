@@ -1,0 +1,27 @@
+#!/bin/sh
+
+while (true); do
+	if [ "$(diff /mnt/mmcblk0p1/brutefir /home/sftparoio)" != "" ]
+	then
+		echo "Convolver:   Filter directories differ!"
+		if [ "$(diff /mnt/mmcblk0p1/brutefir /home/sftparoio | awk -F'[:]' '/mmcblk0p1/ {print $1;exit;}')" = "Only in /mnt/mmcblk0p1/brutefir" ]
+		then
+			echo "Convolver:   There are more files on the SD-card than in RAM, I will delete these..."
+			cardmount rw
+			rm -f $(diff /mnt/mmcblk0p1/brutefir/ /home/sftparoio | awk  -F'[:| ]' '/brutefir/ {print $3 $5}')
+			sync
+			cardmount ro
+		fi
+
+		if [ "$(diff /mnt/mmcblk0p1/brutefir /home/sftparoio |  awk -F'[:]' '/sftparoio/ {print $1;exit;}')" = "Only in /home/sftparoio"  ]
+		then
+			echo "Convolver:   There are more files in RAM than on the SD-card, I will copy these..."
+			cardmount rw
+			cp $(diff /mnt/mmcblk0p1/brutefir /home/sftparoio | awk  -F'[:| ]' '/sftparoio/ {print $3 "/"  $5}') /mnt/mmcblk0p1/brutefir
+			chmod 777 /home/sftparoio/*
+			sync
+			cardmount ro
+		fi
+	fi
+	sleep 3
+done

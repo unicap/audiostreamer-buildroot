@@ -1,0 +1,96 @@
+<style type="text/css">
+	a{text-decoration:none;}
+	body
+	{
+    	font-family: Verdana, Arial, 'sans-serif';
+	}
+
+	label
+	{
+  	  width: 12em;
+  	  display: block;
+  	  float: left;
+  	}
+
+	input
+	{
+		width: 10em;
+	}
+
+	input[type=radio]
+	{
+		width: 1em;
+	}
+
+	fieldset
+	{
+		border:1px solid gray
+	}
+
+	legend
+	{
+  		padding: 0.2em 0.5em;
+  		color:black;
+  		font-size:100%;
+  		text-align:left;
+  	}
+	h1
+  	{
+  		font-size:120%
+  	}
+	select
+	{
+		width: 10em;
+	}
+	
+	#content
+	{
+		position:relative;
+		width: 600px;		
+	}
+	.system
+	{
+		max-width: 570px;
+		font-size: 75%;
+		height: 15em;
+		margin-top: 1em;
+		overflow:auto;
+	}
+	.tooltip
+	{
+		display: inline;
+		position: relative;
+	}
+	.tooltip:hover:after
+	{
+		background: #333;
+		background: rgba(0,0,0,.8);
+		border-radius: 5px;
+		bottom: 20px;
+		color: #fff;
+		content: attr(title);
+		left: 20%;
+		padding: 10px 10px 10px 10px;
+		margin-left: 7em;
+		position: absolute;
+		z-index: 98;
+		width: 250px;
+	}
+	.tooltip:hover:before
+	{
+		border: solid;
+		border-color: #333 transparent;
+		border-width: 6px 6px 0 6px;
+		margin-left: 7.75em;
+		bottom: 15px;
+		content: "";
+		left: 50%;
+		position: absolute;
+		z-index: 99;
+	}
+	.actiongroup
+	{
+		margin: 0 0 0 .5em;
+		width: 12em;
+	}
+</style>

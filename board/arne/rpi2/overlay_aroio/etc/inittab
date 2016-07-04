@@ -1,0 +1,8 @@
+::sysinit:/etc/rcS
+#tty1::respawn:/etc/init.d/hogger
+
+
+#::askfirst:-/bin/sh
+
+#::respawn:/bin/cttyhack /bin/sh -c /etc/init.d/hogger
+#::once:/etc/init.d/hogger tty1

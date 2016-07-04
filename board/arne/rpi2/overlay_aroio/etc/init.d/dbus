@@ -1,0 +1,373 @@
+#!/bin/sh
+########################################################################
+# Begin dbus
+#
+# Description : Start dbus daemon
+#
+# Author      : Bruce Dubbs - bdubbs@linuxfromscratch.org
+#
+# Version     : LFS 7.0
+#
+########################################################################
+
+### BEGIN INIT INFO
+# Provides:            dbus
+# Required-Start:      cleanfs
+# Should-Start:        $remote_fs
+# Required-Stop:       sendsignals
+# Should-Stop:
+# Default-Start:       2 3 4 5
+# Default-Stop:        0 1 6
+# Short-Description:   Starts message bus.
+# Description:         Starts message bus.
+# X-LFS-Provided-By:   LFS
+### END INIT INFO
+
+#. /lib/lsb/init-functions
+
+#$LastChangedBy: bdubbs $
+#$Date: 2012-05-02 20:39:55 +0000 (Wed, 02 May 2012) $
+
+log_failure_msg()
+{
+    /bin/echo -n -e "${BMPREFIX}${@}"
+    /bin/echo -e "${CURS_ZERO}${FAILURE_PREFIX}${SET_COL}${FAILURE_SUFFIX}"
+
+    # Strip non-printable characters from log file
+
+    timespec
+    logmessage=`echo "${@}" | sed 's/\\\033[^a-zA-Z]*.//g'`
+    /bin/echo -e "${STAMP} ${logmessage} FAIL" >> ${BOOTLOG}
+    
+    return 0
+}
+
+log_failure_msg2()
+{
+    /bin/echo -n -e "${BMPREFIX}${@}"
+    /bin/echo -e "${CURS_ZERO}${FAILURE_PREFIX}${SET_COL}${FAILURE_SUFFIX}"
+
+    echo "FAIL" >> ${BOOTLOG}
+    
+    return 0
+}
+
+log_success_msg()
+{
+    /bin/echo -n -e "${BMPREFIX}${@}"
+    /bin/echo -e "${CURS_ZERO}${SUCCESS_PREFIX}${SET_COL}${SUCCESS_SUFFIX}"
+
+    # Strip non-printable characters from log file
+    logmessage=`echo "${@}" | sed 's/\\\033[^a-zA-Z]*.//g'`
+
+    timespec
+    /bin/echo -e "${STAMP} ${logmessage} OK" >> ${BOOTLOG}
+    
+    return 0
+}
+
+log_success_msg2()
+{
+    /bin/echo -n -e "${BMPREFIX}${@}"
+    /bin/echo -e "${CURS_ZERO}${SUCCESS_PREFIX}${SET_COL}${SUCCESS_SUFFIX}"
+
+    echo " OK" >> ${BOOTLOG}
+    
+    return 0
+}
+
+################################################################################
+# pidofproc()                                                                  #
+# Usage: pidofproc [-p pidfile] pathname                                       #
+#                                                                              #
+# Purpose: This function returns one or more pid(s) for a particular daemon    #
+#                                                                              #
+# Inputs: -p pidfile, use the specified pidfile instead of pidof               #
+#         pathname, path to the specified program                              #
+#                                                                              #
+# Return values (as defined by LSB status codes):                              #
+#       0 - Success (PIDs to stdout)                                           #
+#       1 - Program is dead, PID file still exists (remaining PIDs output)     #
+#       3 - Program is not running (no output)                                 #
+################################################################################
+pidofproc()
+{
+    local pidfile
+    local program
+    local prefix
+    local progname
+    local pidlist
+    local lpids
+    local exitstatus="0"
+
+    # Process arguments
+    while true; do
+        case "${1}" in
+
+            -p)
+                pidfile="${2}"
+                shift 2
+                ;;
+
+            *)
+                program="${1}"
+                if [ -n "${2}" ]; then
+                    # Too many arguments
+                    # Since this is status, return unknown
+                    return 4
+                else
+                    break
+                fi
+                ;;
+        esac
+    done
+
+    # If a PID file is not specified, try and find one.
+    if [ -z "${pidfile}" ]; then
+        # Get the program's basename
+        prefix=`echo "${program}" | sed 's/[^/]*$//'`
+
+        if [ -z "${prefix}" ]; then 
+           progname="${program}"
+        else
+           progname=`echo "${program}" | sed "s@${prefix}@@"`
+        fi
+
+        # If a PID file exists with that name, assume that is it.
+        if [ -e "/var/run/${progname}.pid" ]; then
+            pidfile="/var/run/${progname}.pid"
+        fi
+    fi
+
+    # If a PID file is set and exists, use it.
+    if [ -n "${pidfile}" -a -e "${pidfile}" ]; then
+
+        # Use the value in the first line of the pidfile
+        pidlist=`/bin/head -n1 "${pidfile}"`
+        # This can optionally be written as 'sed 1q' to repalce 'head -n1'
+        # should LFS move /bin/head to /usr/bin/head
+    else
+        # Use pidof
+        pidlist=`pidof "${program}"`
+    fi
+
+    # Figure out if all listed PIDs are running.
+    for pid in ${pidlist}; do
+        kill -0 ${pid} 2> /dev/null
+
+        if [ "${?}" -eq "0" ]; then
+            lpids="${lpids}${pid} "
+        else
+            exitstatus="1"
+        fi
+    done
+
+    if [ -z "${lpids}" -a ! -f "${pidfile}" ]; then
+        return 3
+    else
+        echo "${lpids}"
+        return "${exitstatus}"
+    fi
+}
+
+
+################################################################################
+# start_daemon()                                                               #
+# Usage: start_daemon [-f] [-n nicelevel] [-p pidfile] pathname [args...]      #
+#                                                                              #
+# Purpose: This runs the specified program as a daemon                         #
+#                                                                              #
+# Inputs: -f: (force) run the program even if it is already running.           #
+#         -n nicelevel: specify a nice level. See 'man nice(1)'.               #
+#         -p pidfile: use the specified file to determine PIDs.                #
+#         pathname: the complete path to the specified program                 #
+#         args: additional arguments passed to the program (pathname)          #
+#                                                                              #
+# Return values (as defined by LSB exit codes):                                #
+#       0 - program is running or service is OK                                #
+#       1 - generic or unspecified error                                       #
+#       2 - invalid or excessive argument(s)                                   #
+#       5 - program is not installed                                           #
+################################################################################
+start_daemon()
+{
+    local force=""
+    local nice="0"
+    local pidfile=""
+    local pidlist=""
+    local retval=""
+
+    # Process arguments
+    while true
+    do
+        case "${1}" in
+
+            -f)
+                force="1"
+                shift 1
+                ;;
+
+            -n)
+                nice="${2}"
+                shift 2
+                ;;
+
+            -p)
+                pidfile="${2}"
+                shift 2
+                ;;
+
+            -*)
+                return 2
+                ;;
+
+            *)
+                program="${1}"
+                break
+                ;;
+        esac
+    done
+
+    # Check for a valid program
+    if [ ! -e "${program}" ]; then return 5; fi
+
+    # Execute
+    if [ -z "${force}" ]; then
+        if [ -z "${pidfile}" ]; then
+            # Determine the pid by discovery
+            pidlist=`pidofproc "${1}"`
+            retval="${?}"
+        else
+            # The PID file contains the needed PIDs
+            # Note that by LSB requirement, the path must be given to pidofproc,
+            # however, it is not used by the current implementation or standard.
+            pidlist=`pidofproc -p "${pidfile}" "${1}"`
+            retval="${?}"
+        fi
+
+        # Return a value ONLY 
+        # It is the init script's (or distribution's functions) responsibilty
+        # to log messages!
+        case "${retval}" in
+
+            0)
+                # Program is already running correctly, this is a 
+                # successful start.
+                return 0
+                ;;
+
+            1)
+                # Program is not running, but an invalid pid file exists
+                # remove the pid file and continue
+                rm -f "${pidfile}"
+                ;;
+
+            3)
+                # Program is not running and no pidfile exists
+                # do nothing here, let start_deamon continue.
+                ;;
+
+            *)
+                # Others as returned by status values shall not be interpreted
+                # and returned as an unspecified error.
+                return 1
+                ;;
+        esac
+    fi
+
+    # Do the start!
+    nice -n "${nice}" "${@}"
+}
+
+
+################################################################################
+# evaluate_retval()                                                            #
+# Usage: Evaluate a return value and print success or failyure as appropriate  #
+#                                                                              #
+# Purpose: Convenience function to terminate an info message                   #
+#                                                                              #
+# Return values: Not used                                                      #
+################################################################################
+evaluate_retval()
+{
+   local error_value="${?}"
+
+   if [ ${error_value} = 0 ]; then
+      log_success_msg2
+   else
+      log_failure_msg2
+   fi
+}
+
+################################################################################
+# log_info_msg()                                                               #
+# Usage: log_info_msg message                                                  #
+#                                                                              #
+# Purpose: Print an information message to the screen and                      #
+#          a boot log file.  Does not print a trailing newline character.      #
+#                                                                              #
+# Return values: Not used                                                      #
+################################################################################
+log_info_msg()
+{
+    /bin/echo -n -e "${BMPREFIX}${@}"
+
+    # Strip non-printable characters from log file
+    logmessage=`echo "${@}" | sed 's/\\\033[^a-zA-Z]*.//g'`
+    timespec
+    /bin/echo -n -e "${STAMP} ${logmessage}" >> ${BOOTLOG}
+    
+    return 0
+}
+
+################################################################################
+# timespec()                                                                   #
+#                                                                              #
+# Purpose: An internal utility function to format a timestamp                  #
+#          a boot log file.  Sets the STAMP variable.                          #
+#                                                                              #
+# Return value: Not used                                                       #
+################################################################################
+timespec()
+{
+   STAMP="$(echo `date +"%b %d %T %:z"` `hostname`) "
+   return 0
+}
+
+
+pidfile=/run/dbus/pid
+socket=/run/dbus/system_bus_socket
+
+case "$1" in
+   start)
+      log_info_msg "Starting the D-Bus Messagebus Daemon..."
+      mkdir -p /run/dbus
+      /usr/bin/dbus-uuidgen --ensure
+      start_daemon /usr/bin/dbus-daemon --system
+      evaluate_retval
+      ;;
+
+   stop)
+      log_info_msg "Stopping the D-Bus Messagebus Daemon..."
+      killproc /usr/bin/dbus-daemon
+      evaluate_retval
+      rm -f $socket $pidfile
+      ;;
+
+   restart)
+      $0 stop
+      sleep 1
+      $0 start
+      ;;
+
+   status)
+      statusproc /usr/bin/dbus-daemon
+      ;;
+
+   *)
+      echo "Usage: $0 {start|stop|restart|status}"
+      exit 1
+      ;;
+esac
+
+# End /etc/init.d/dbus

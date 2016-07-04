@@ -1,0 +1,50 @@
+#!/bin/sh
+. /mnt/mmcblk0p1/userconfig.txt
+
+## unklar, aber dabei
+modprobe bcm2835-gpiomem
+modprobe uio
+
+## WIFI
+  modprobe 8192cu
+  modprobe 8812au
+#exit
+## AUDIO
+#  modprobe bcm2708-dmaengine
+#  modprobe snd-soc-pcm512x
+#  modprobe snd-soc-pcm512x-i2c
+#exit
+## DAC erkennen
+case $SOUNDCARD in
+'IQAudIO DAC')
+	modprobe snd-soc-iqaudio-dac
+	;;
+
+'HiFiBerry Digi')
+	modprobe regmap-spi
+	modprobe snd-soc-wm8804
+	modprobe snd-soc-wm8804-i2c
+	modprobe snd-soc-hifiberry-digi
+	;;
+
+'HiFiBerry DAC')
+	modprobe regmap-mmio
+	modprobe regmap-i2c
+	modprobe regmap-spi
+	modprobe i2c-bcm2708
+#	modprobe spi-bcm2708
+#	modprobe spi-bcm2835
+#	modprobe snd-soc-pcm5102a
+#	modprobe snd-soc-bcm2708-i2s
+#	snd-soc-bcm2708-i2s
+	#modprobe snd-soc-wm8804
+	#modprobe snd-soc-wm8804-i2c
+	#modprobe clk-hifiberry-dacpro
+	#modprobe snd-soc-hifiberry-dac
+	modprobe snd-soc-pcm512x
+#	modprobe snd-soc-pcm512x-i2c
+	modprobe snd-soc-hifiberry-dacplus
+	;;
+esac
+## Bluetooth
+#  modprobe btusb

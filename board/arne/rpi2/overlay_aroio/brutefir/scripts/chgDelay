@@ -1,0 +1,6 @@
+#!/bin/sh
+# Brutefir Volume Control
+# $1 = output
+# $2 = delay blocks
+
+`echo 'cfd' $1 $2 | nc localhost 3000` 2>>/dev/null

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Returns the used Filter set
+echo 'lf' | nc 127.0.0.1 3000 | grep -m 1 'coeff set: [[:digit:]]'
+#echo 'lf' | nc localhost 3000 | grep '[[:alnum:]_]\{1,\}_[[:digit:]]'

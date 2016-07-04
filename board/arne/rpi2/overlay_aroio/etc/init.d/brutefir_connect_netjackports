@@ -1,0 +1,11 @@
+#!/bin/sh
+
+while (true)
+do
+	NETCLIENT=$(jack_lsp | awk '/from/ { $0=substr($0,1,length($0)-1); print $0;exit; }')
+	echo 'Connecting $NETCLIENT to brutefir...'
+	jack_connect "$NETCLIENT"1 brutefir:input-0
+	jack_connect "$NETCLIENT"2 brutefir:input-1
+	sleep 5
+done
+

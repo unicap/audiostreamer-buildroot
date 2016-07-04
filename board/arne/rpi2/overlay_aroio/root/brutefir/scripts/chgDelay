@@ -1,0 +1,8 @@
+#!/bin/sh
+# Brutefir Volume Control
+# cfd  -- change filter delay. (may truncate coeffs!)
+# 		  cfd <filter> <delay blocks>
+# $1 = filter
+# $2 = delay blocks
+
+`echo 'cod' $1 $2 | nc 127.0.0.1 3000` 2>>/dev/null

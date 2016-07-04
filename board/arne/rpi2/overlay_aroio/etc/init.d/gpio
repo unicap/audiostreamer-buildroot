@@ -1,0 +1,14 @@
+#!/bin/sh
+
+chmod -R 777 /sys/class/gpio/export
+
+echo "22" > /sys/class/gpio/export
+echo "27" > /sys/class/gpio/export
+
+chmod -R 777 /sys/class/gpio/gpio*
+
+echo "out" > /sys/class/gpio/gpio22/direction
+echo "in" > /sys/class/gpio/gpio27/direction
+
+gpioreader &
+gpiowriter &

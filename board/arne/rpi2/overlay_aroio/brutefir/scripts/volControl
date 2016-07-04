@@ -1,0 +1,9 @@
+#!/bin/sh
+# Brutefir Volume Control
+#	cfoa -- change filter output attenuation.
+#   	     cfoa <filter> <output> <attenuation|Mmultiplier>
+# Multiplier -1: Phase invertieren
+# $1 = filter
+# $2 = output channel
+# $3 = attenuation
+`echo 'cfoa' $1 $2 $3 | nc localhost 3000` 2>>/dev/null

@@ -1,0 +1,13 @@
+#!/bin/sh
+# Brutefir Volume Control
+#	cfoa -- change filter output attenuation.
+#   	     cfoa <filter> <output> <attenuation|Mmultiplier>
+# $1 = MS (true|false)
+# $2 = attenuation/multiplier
+#if [ $1 = 0 ] ;then 
+#	`echo 'cfoa 0 0' $2 ';cfoa 1 1' $2| nc localhost 3000` 2>>/dev/null 
+	`echo 'cfia 0 0' $2 ';cfia 1 1' $2| nc 127.0.0.1 3000` 2>>/dev/null 
+#else
+#	`echo 'cfoa 2 0' $2 ';cfoa 3 1' $2| nc localhost 3000` 2>>/dev/null 
+#	`echo 'cfia 2 0' $2 ';cfia 3 1' $2| nc localhost 3000` 2>>/dev/null 
+#fi

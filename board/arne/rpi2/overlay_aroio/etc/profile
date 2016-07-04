@@ -1,0 +1,7 @@
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+LD_LIBRARY_PATH=/lib
+export PATH LD_LIBRARY_PATH
+export PERL5LIB=/opt/perl-5.20/usr/lib/perl5/5.20.2
+
+TZ="Europe/Berlin"
+export TZ

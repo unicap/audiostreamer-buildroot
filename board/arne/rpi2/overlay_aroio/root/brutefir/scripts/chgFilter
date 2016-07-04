@@ -1,0 +1,10 @@
+#!/bin/sh
+# Brutefir Volume Control
+# cfc  -- change filter coefficients.
+# 	      cfc <filter> <coeff>
+# $1 = filter
+# $2 = coeff
+
+`echo 'cfc' $1 $2 | nc 127.0.0.1 3000` &> /dev/null
+echo $1 > /root/tmp
+echo $2 >> /root/tmp

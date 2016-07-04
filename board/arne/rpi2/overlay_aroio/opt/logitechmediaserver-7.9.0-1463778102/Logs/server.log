@@ -1,0 +1,4 @@
+[16-05-27 14:21:27.1285] main::init (384) Starting Logitech Media Server (v7.9.0, 1463778102, Fri May 27 04:10:48 UTC 2016) perl 5.020002 - armv7l-linux
+[16-05-27 14:21:27.2057] main::changeEffectiveUserAndGroup (1001) Warning: Logitech Media Server must not be run as root!  Trying user squeezeboxserver instead.
+[16-05-27 14:21:27.2124] main::init (474) Warning: Can't locate UUID/Tiny.pm:   Permission denied at ./slimserver.pl line 474.
+[16-05-27 14:21:27.2172] Slim::Utils::Prefs::Namespace::savenow (338) Error: can't save /sources/LMS/7.9/logitechmediaserver-7.9.0-1463778102-noCPAN/prefs/server.prefs: Permission denied at /sources/LMS/7.9/logitechmediaserver-7.9.0-1463778102-noCPAN/Slim/Utils/Prefs/Namespace.pm line 327.

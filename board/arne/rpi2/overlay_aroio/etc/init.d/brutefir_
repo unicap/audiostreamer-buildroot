@@ -1,0 +1,102 @@
+#!/bin/sh
+
+. /mnt/mmcblk0p1/userconfig.txt
+
+if [ "$BRUTEFIR" = "OFF"  ] ; then exit ; fi
+
+#echo "killing jackd"
+while pgrep -x jackd ; do pkill -x jackd &> /dev/null ; sleep 0.1 ; done
+#echo "killing brutefir"
+while pgrep -x brutefir ; do pkill -x brutefir &> /dev/null ; sleep 0.1 ; done
+#echo "killing brutefir_connect_netjackports"
+killall brutefir_connect_netjackports &> /dev/null
+
+if [ "$1" = "reload" ] ; then echo "stopping streamer" && stopstreamer ; fi
+
+echo "jackd:       Starting up..."
+#jackd -R -P 10 -ddummy -r96000 -p 1024 &> /var/log/jackd.log &
+jackd -R -P 10 -dalsa -P -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n2 &> /var/log/jackd.log &
+until pgrep -x jackd &> /dev/null ; do sleep 0.2 ; done
+sleep 3
+
+if [ "$MSCODING" = "ON"  ]
+then	cp /root/brutefir_config.default.jack.mscoded /root/brutefir_config
+else	cp /root/brutefir_config.default.jack.stereo /root/brutefir_config
+fi
+
+counter=-1
+for i in $(grep -o "COEFF_NAME[^m]" /mnt/mmcblk0p1/userconfig.txt)
+do
+	COEFF_NAME=$(eval "echo \$$i")
+	counter=$((counter+1))
+	if [ "$COEFF_NAME" = ""  ] ; then COEFF_NAME="BypassFilter" ; fi
+	if ! [ -e /home/sftparoio/"$COEFF_NAME"L"$RATE".dbl ]  ; then COEFF_NAME="BypassFilter" ; fi
+	sed -i -- s/"coeff\"left"$counter"\"{filename:\"\/home\/sftparoio\/BypassFilterL96.dbl\";"/"coeff\"left"$counter"\"{filename:\"\/home\/sftparoio\/"$COEFF_NAME"L"$RATE".dbl\";"/g /root/brutefir_config
+	sed -i -- s/"coeff\"right"$counter"\"{filename:\"\/home\/sftparoio\/BypassFilterR96.dbl\";"/"coeff\"right"$counter"\"{filename:\"\/home\/sftparoio\/"$COEFF_NAME"R"$RATE".dbl\";"/g /root/brutefir_config
+done
+
+## paste together attenuation and phase for default coeff
+ATT="_ATT"
+COEFF="COEFF"
+DEF_COEFF_ATT='$COEFF$ATT$DEF_COEFF'
+eval DEF_COEFF_ATT=$DEF_COEFF_ATT
+DEF_COEFF_ATT=$(eval echo \$$DEF_COEFF_ATT)
+
+PHASE="_PHASE"
+COEFF="COEFF"
+DEF_COEFF_PHASE='$COEFF$PHASE$DEF_COEFF'
+eval DEF_COEFF_PHASE=$DEF_COEFF_PHASE
+DEF_COEFF_PHASE=$(eval echo \$$DEF_COEFF_PHASE)
+
+NAME="_NAME"
+COEFF="COEFF"
+DEF_COEFF_NAME='$COEFF$NAME$DEF_COEFF'
+eval DEF_COEFF_NAME=$DEF_COEFF_NAME
+DEF_COEFF_NAME=$(eval echo \$$DEF_COEFF_NAME)
+
+#echo "def-coeff-att is $DEF_COEFF_ATT"
+#echo "def-coeff-phase is $DEF_COEFF_PHASE"
+#echo "def-coeff is $DEF_COEFF_NAME"
+
+if [ "$DEF_COEFF" = "" ] ; then DEF_COEFF="0" ; fi
+if [ "$DEF_COEFF_PHASE" = "" ] ; then DEF_COEFF_PHASE="1" ; fi
+if [ "$DEF_COEFF_ATT" = "" ] ; then DEF_COEFF_ATT="0" ; fi
+
+sed -i -- s/"to_outputs:\"left\"\/0\/0;"/"to_outputs:\"left\"\/"$DEF_COEFF_ATT"\/"$DEF_COEFF_PHASE";"/g /root/brutefir_config
+sed -i -- s/"to_outputs:\"right\"\/0\/0;"/"to_outputs:\"right\"\/"$DEF_COEFF_ATT"\/"$DEF_COEFF_PHASE";"/g /root/brutefir_config
+
+sed -i -- s/"coeff:\"left0\";"/"coeff:\"left"$DEF_COEFF"\";"/g /root/brutefir_config
+sed -i -- s/"coeff:\"right0\";"/"coeff:\"right"$DEF_COEFF"\";"/g /root/brutefir_config
+
+until pgrep jackd &> /dev/null ; do sleep 0.2 ; done
+
+if [ "$1" = "reload" ]
+then startstreamer.sh &
+fi
+
+echo "Brutefir:    Starting up..."
+
+#while (true); do
+#	while ! $(prep brutefir); do
+
+brutefir /root/brutefir_config &> /var/log/brutefir.log &
+
+until echo 'lf' | nc localhost 3000 &> /dev/null; do sleep 0.1 ; done
+echo "Brutefir:    Running!"
+
+if [ "$AUDIOPLAYER" = "netjack"  ]
+then
+	if [ "$(cat /sys/class/net/eth0/carrier)" = "1" ]
+	then
+		jack_load netmanager
+	else	echo "No network carrier found, cannot start netjack!" >> /var/log/jackd.log
+	fi
+/etc/init.d/brutefir_connect_netjackports &> /dev/null &
+fi
+
+exit 0
+
+#		sleep 3
+#		jack_connect $() brutefir:input-0
+#	done
+#done
