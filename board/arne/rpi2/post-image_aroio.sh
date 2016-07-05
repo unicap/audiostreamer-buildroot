@@ -7,9 +7,10 @@ set -e
 mv "${BINARIES_DIR}/zImage-dt" "${BINARIES_DIR}/zImage"
 
 echo "Installing config.txt"
-cp $(dirname $0)/config.txt ${BINARIES_DIR}/config.txt
+cp $(dirname $0)/config_aroio.txt ${BINARIES_DIR}/config.txt
 
 EXPORTDIR=${BINARIES_DIR}/sdcard
+DISTDIR=$(dirname $0)/dist_aroio
 
 echo "Generating SD card content in ${EXPORTDIR}"
 
@@ -18,5 +19,6 @@ cp -r ${BINARIES_DIR}/rpi-firmware/* ${EXPORTDIR}/ || echo "Error ignored"
 cp ${BINARIES_DIR}/*.dtb ${EXPORTDIR}/
 cp ${BINARIES_DIR}/zImage ${EXPORTDIR}/
 cp ${BINARIES_DIR}/config.txt ${EXPORTDIR}/
+cp -r ${DISTDIR}/brutefir ${EXPORTDIR}/
 
 echo ">>DONE"
