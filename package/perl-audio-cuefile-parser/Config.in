@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_AUDIO_CUEFILE_PARSER
+	bool "perl-audio-cuefile-parser"
+	help
+	  Class to parse a cuefile and access the chewy, nougat centre. Returns Audio::Cuefile::Parser::Track objects.
+
+	  http://search.cpan.org/~mattk/Audio-Cuefile-Parser-0.02/lib/Audio/Cuefile/Parser.pm
