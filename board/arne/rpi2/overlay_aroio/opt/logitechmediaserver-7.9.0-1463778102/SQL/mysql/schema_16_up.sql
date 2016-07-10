@@ -1,2 +1,0 @@
--- re-build tracks table from scratch to make url case insensitive
--- Not required for MySQL.
