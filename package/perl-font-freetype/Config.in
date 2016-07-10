@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PERL_FONT_FREETYPE
+	bool "perl-font-freetype"
+	select BR2_PACKAGE_FREETYPE
+	help
+	  Font::FreeType - read font files and render glyphs from Perl using FreeType2
+
+	  http://search.cpan.org/~dmol/Font-FreeType-0.07/lib/Font/FreeType.pm
