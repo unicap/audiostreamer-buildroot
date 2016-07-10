@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_IO_AIO
+	bool "perl-io-aio"
+	help
+	  IO::AIO - Asynchronous Input/Output
+
+	  http://search.cpan.org/~mlehmann/IO-AIO-4.34/AIO.pm
