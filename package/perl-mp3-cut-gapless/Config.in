@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MP3_CUT_GAPLESS
+	bool "perl-mp3-cut-gapless"
+	help
+	  MP3::Cut::Gapless - Split an MP3 file without gaps (based on pcutmp3)
+
+	  http://search.cpan.org/~agrundma/MP3-Cut-Gapless-0.03/lib/MP3/Cut/Gapless.pm
