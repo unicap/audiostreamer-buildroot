@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PERL_IMAGE_SCALE
+	bool "perl-image-scale"
+	select BR2_PACKAGE_JPEG
+	select BR2_PACKAGE_GIFLIB
+	select BR2_PACKAGE_LIBPNG
+	help
+	  Image::Scale - Fast, high-quality fixed-point image resizing
+
+	  http://search.cpan.org/~agrundma/Image-Scale-0.12/lib/Image/Scale.pm
