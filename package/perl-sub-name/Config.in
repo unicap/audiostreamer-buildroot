@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_SUB_NAME
+	bool "perl-sub-name"
+	help
+	  Sub::Name - (re)name a sub
+
+	  http://search.cpan.org/~ether/Sub-Name-0.15/lib/Sub/Name.pm
