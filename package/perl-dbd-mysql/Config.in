@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PERL_DBD_MYSQL
+	bool "perl-dbd-mysql"
+	select BR2_PACKAGE_MYSQL
+	select BR2_PACKAGE_OPENSSL
+	select BR2_PACKAGE_PERL_DBI
+	help
+	  DBD::mysql - MySQL driver for the Perl5 Database Interface (DBI)
+
+	  http://search.cpan.org/~michielb/DBD-mysql-4.034/lib/DBD/mysql.pm
