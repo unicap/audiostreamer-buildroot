@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_JSON_XS
+	bool "perl-json-xs"
+	help
+	  JSON::XS - JSON serialising/deserialising, done correctly and fast
+
+	  http://search.cpan.org/~mlehmann/JSON-XS-3.02/XS.pm
