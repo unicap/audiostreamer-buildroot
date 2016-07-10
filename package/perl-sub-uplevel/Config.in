@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_SUB_UPLEVEL
+	bool "perl-sub-uplevel"
+	help
+	  Sub::Uplevel - apparently run a function in a higher stack frame
+
+	  http://search.cpan.org/~dagolden/Sub-Uplevel-0.25/lib/Sub/Uplevel.pm
