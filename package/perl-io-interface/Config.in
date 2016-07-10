@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_IO_INTERFACE
+	bool "perl-io-interface"
+	help
+	  IO::Interface - Perl extension for access to network card configuration information
+
+	  http://search.cpan.org/~lds/IO-Interface-1.09/lib/IO/Interface.pm
