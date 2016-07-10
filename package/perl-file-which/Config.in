@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_FILE_WHICH
+	bool "perl-file-which"
+	help
+	  File::Which - Perl implementation of the which utility as an API
+
+	  http://search.cpan.org/~plicease/File-Which-1.21/lib/File/Which.pm
