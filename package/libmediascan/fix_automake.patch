@@ -1,0 +1,41 @@
+From add810b8814e11ebd37bd94c0b19b9274ff3fa61 Mon Sep 17 00:00:00 2001
+From: Arne Caspari <arne@unicap-imaging.org>
+Date: Wed, 6 Jul 2016 22:09:37 +0200
+Subject: [PATCH] Fix automake errors
+
+---
+ configure.ac | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0d68204..bb11453 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3,11 +3,9 @@
+ 
+ AC_PREREQ([2.68])
+ AC_INIT([libmediascan],[0.1],[andy@hybridized.org])
+-AM_INIT_AUTOMAKE([-Wall -Werror])
+-LT_PREREQ([2.4])
+-LT_INIT
+-
+ AC_CANONICAL_SYSTEM
++AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects])
++
+ 
+ AC_CONFIG_MACRO_DIR([m4])
+ AC_CONFIG_SRCDIR([src/mediascan.c])
+@@ -17,6 +15,10 @@ AC_CONFIG_HEADERS([config.h])
+ AC_PROG_CC([clang gcc])
+ AC_PROG_OBJC([gcc objcc objc])
+ AM_PROG_CC_C_O
++AM_PROG_AR
++
++LT_PREREQ([2.4])
++LT_INIT
+ 
+ # 64-bit file size support
+ AC_SYS_LARGEFILE
+-- 
+2.9.0
+

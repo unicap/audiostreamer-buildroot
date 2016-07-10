@@ -1,0 +1,8 @@
+config BR2_PACKAGE_LIBMEDIASCAN
+	bool "libmediascan"
+	
+	help
+          libmediascan is an evolution of the work done on the Perl
+          modules Audio::Scan and Image::Scale
+
+	  https://github.com/andygrundman/libmediascan
