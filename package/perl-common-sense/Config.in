@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_COMMON_SENSE
+	bool "perl-common-sense"
+	help
+	  common::sense - save a tree AND a kitten, use common::sense!
+
+	  http://search.cpan.org/~mlehmann/common-sense-3.74/sense.pod
