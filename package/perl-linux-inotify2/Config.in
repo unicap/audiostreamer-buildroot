@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_LINUX_INOTIFY2
+	bool "perl-linux-inotify2"
+	help
+	  Linux::Inotify2 - scalable directory/file change notification
+
+	  http://search.cpan.org/~mlehmann/Linux-Inotify2-1.22/Inotify2.pm
