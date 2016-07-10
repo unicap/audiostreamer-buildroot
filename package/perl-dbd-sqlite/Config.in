@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_DBD_SQLITE
+	bool "perl-dbd-sqlite"
+	help
+	  DBD::SQLite - Self-contained RDBMS in a DBI Driver
+
+	  http://search.cpan.org/dist/DBD-SQLite/lib/DBD/SQLite.pm
