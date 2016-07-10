@@ -1,0 +1,5 @@
+config BR2_PACKAGE_PERL_EV
+	bool "perl-ev"
+	select BR2_PACKAGE_LIBEV
+	help
+	  EV - perl interface to libev, a high performance full-featured event loop
