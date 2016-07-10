@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_TEMPLATE_TOOLKIT
+	bool "perl-template-toolkit"
+	help
+	  Template::Toolkit - Template Processing System
+
+	  http://search.cpan.org/~abw/Template-Toolkit-2.26/lib/Template/Toolkit.pod
