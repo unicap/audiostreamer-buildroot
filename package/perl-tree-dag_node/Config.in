@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PERL_TREE_DAG_NODE
+	bool "perl-tree-dag_node"
+	select BR2_PACKAGE_PERL_FILE_SLURP_TINY
+	help
+	  Tree::DAG_Node - An N-ary tree
+
+	  http://search.cpan.org/~rsavage/Tree-DAG_Node-1.29/lib/Tree/DAG_Node.pm
