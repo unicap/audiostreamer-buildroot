@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PERL_CLASS_C3_XS
+	bool "perl-class-c3-xs"
+	help
+	  Class::C3::XS - XS speedups for Class::C3
