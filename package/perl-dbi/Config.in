@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PERL_DBI
+	bool "perl-dbi"
+	help
+	  DBI - Database independent interface for Perl
+
+	  http://search.cpan.org/~timb/DBI-1.636/DBI.pm
+
