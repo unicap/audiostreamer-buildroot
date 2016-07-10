@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_DEVEL_CHECKLIB
+	bool "perl-devel-checklib"
+	help
+	  Devel::CheckLib - check that a library is available
+
+	  http://search.cpan.org/~mattn/Devel-CheckLib-1.07/lib/Devel/CheckLib.pm
