@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_XSACCESSOR
+	bool "perl-class-xsaccessor"
+	help
+	  Class::XSAccessor - Generate fast XS accessors without runtime compilation
+
+	  http://search.cpan.org/~smueller/Class-XSAccessor-1.19/lib/Class/XSAccessor.pm
