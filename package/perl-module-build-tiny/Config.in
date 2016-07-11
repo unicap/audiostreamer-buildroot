@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MODULE_BUILD_TINY
+	bool "perl-module-build-tiny"
+	help
+	  Module::Build::Tiny - A tiny replacement for Module::Build
+
+	  http://search.cpan.org/~leont/Module-Build-Tiny-0.039/lib/Module/Build/Tiny.pm
