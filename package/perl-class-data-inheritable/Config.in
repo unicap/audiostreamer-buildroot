@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_DATA_INHERITABLE
+	bool "perl-class-data-inheritable"
+	help
+	  Class::Data::Inheritable - Inheritable, overridable class data
+
+	  http://search.cpan.org/~tmtm/Class-Data-Inheritable-0.08/lib/Class/Data/Inheritable.pm
