@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_IO_STRING
+	bool "perl-io-string"
+	help
+	  IO::String - Emulate file interface for in-core strings
+
+	  http://search.cpan.org/~gaas/IO-String-1.08/String.pm
