@@ -10,4 +10,6 @@ PERL_FILE_WHICH_SITE = $(BR2_CPAN_MIRROR)/authors/id/P/PL/PLICEASE
 PERL_FILE_WHICH_LICENSE = Artistic or GPLv1+
 PERL_FILE_WHICH_LICENSE_FILES = README
 
+
+$(eval $(perl-package))
 $(eval $(host-perl-package))
