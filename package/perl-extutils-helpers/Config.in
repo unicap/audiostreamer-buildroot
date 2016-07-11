@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_EXTUTILS_HELPERS
+	bool "perl-extutils-helpers"
+	help
+	  ExtUtils::Helpers - Various portability utilities for module builders
+
+	  http://search.cpan.org/~leont/ExtUtils-Helpers-0.022/lib/ExtUtils/Helpers.pm
