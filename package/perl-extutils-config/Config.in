@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_EXTUTILS_CONFIG
+	bool "perl-extutils-config"
+	help
+	  ExtUtils::Config - A wrapper for perl's configuration
+
+	  http://search.cpan.org/~leont/ExtUtils-Config-0.008/lib/ExtUtils/Config.pm
