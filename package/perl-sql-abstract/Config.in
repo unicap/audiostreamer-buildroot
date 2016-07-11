@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_SQL_ABSTRACT
+	bool "perl-sql-abstract"
+	help
+	  SQL::Abstract - Generate SQL from Perl data structures
+
+	  http://search.cpan.org/~ribasushi/SQL-Abstract-1.81/lib/SQL/Abstract.pm
