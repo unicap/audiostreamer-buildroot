@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_PROC_BACKGROUND
+	bool "perl-proc-background"
+	help
+	  Proc::Background - Generic interface to Unix and Win32 background process management
+
+	  http://search.cpan.org/~bzajac/Proc-Background-1.10/lib/Proc/Background.pm
