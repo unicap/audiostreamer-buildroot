@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_JSON_XS_VERSIONONEANDTWO
+	bool "perl-json-xs-versiononeandtwo"
+	help
+	  JSON::XS::VersionOneAndTwo - Support versions 1 and 2 of JSON::XS
+
+	  http://search.cpan.org/~lbrocard/JSON-XS-VersionOneAndTwo-0.31/lib/JSON/XS/VersionOneAndTwo.pm
