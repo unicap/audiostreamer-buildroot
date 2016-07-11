@@ -11,10 +11,10 @@ PERL_XML_PARSER_LICENSE = Artistic or GPLv1+
 PERL_XML_PARSER_LICENSE_FILES = README
 
 define PERL_XML_PARSER_BUILD_CMDS
-	sed "s~/usr/bin/gcc~$(TARGET_CC) -Os~" $(@D)/Makefile > $(@D)/Makefile.tmp
-	mv $(@D)/Makefile.tmp $(@D)/Makefile
-	sed "s~/usr/bin/gcc~$(TARGET_CC) -Os~" $(@D)/Expat/Makefile > $(@D)/Expat/Makefile.tmp
-	mv $(@D)/Expat/Makefile.tmp $(@D)/Expat/Makefile
+	sed "s~/usr/bin/gcc~$(TARGET_CC) -Os~" -i $(@D)/Makefile
+	sed "s~/usr/bin/gcc~$(TARGET_CC) -Os~" -i $(@D)/Expat/Makefile
+	sed "s~x86_64~$(KERNEL_ARCH)~" -i $(@D)/Expat/Makefile
+	sed "s~host/usr/lib~staging/usr/lib~" -i $(@D)/Expat/Makefile
 	$(MAKE) $(@D)/Makefile -C $(@D)
 endef
 
