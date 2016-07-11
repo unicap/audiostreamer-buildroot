@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_READONLY
+	bool "perl-readonly"
+	help
+	  Readonly - Facility for creating read-only scalars, arrays, hashes
+
+	  http://search.cpan.org/~sanko/Readonly-2.05/lib/Readonly.pm
