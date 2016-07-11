@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_XML_SIMPLE
+	bool "perl-xml-simple"
+	help
+	  XML::Simple - An API for simple XML files
+
+	  http://search.cpan.org/~grantm/XML-Simple-2.22/lib/XML/Simple.pm
