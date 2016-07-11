@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MOO
+	bool "perl-moo"
+	help
+	  Moo - Minimalist Object Orientation (with Moose compatibility)
+
+	  http://search.cpan.org/~haarg/Moo-2.002004/lib/Moo.pm
