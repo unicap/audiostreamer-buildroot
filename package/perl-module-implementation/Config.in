@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MODULE_IMPLEMENTATION
+	bool "perl-module-implementation"
+	help
+	  Module::Implementation - Loads one of several alternate underlying implementations for a module
+
+	  http://search.cpan.org/~drolsky/Module-Implementation-0.09/lib/Module/Implementation.pm
