@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_YAML_XS
+	bool "perl-yaml-xs"
+	help
+	  YAML::XS - Perl YAML Serialization using XS and libyaml
+
+	  http://search.cpan.org/dist/YAML-LibYAML/lib/YAML/XS.pod
