@@ -1,0 +1,66 @@
+From 85d5d22d404e154a82225c2dca55e7236251b185 Mon Sep 17 00:00:00 2001
+From: Arne Caspari <arne@unicap-imaging.org>
+Date: Mon, 13 Jun 2016 10:09:57 +0200
+Subject: [PATCH] Implement a quirk for Lynx Hilo devices
+
+The clock descriptor of Lynx HiLo USB audio DACs contains an error
+that prevents the driver from finding the correct clock source. This
+quirk just returns the correct clock source entity for the device.
+---
+ sound/usb/clock.c  |  3 +++
+ sound/usb/quirks.c | 15 +++++++++++++++
+ sound/usb/quirks.h |  3 +++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 26dd5f2..e00fe05 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -272,6 +272,9 @@ int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id,
+ 			      bool validate)
+ {
+ 	DECLARE_BITMAP(visited, 256);
++	int quirk = snd_usb_clock_find_source_quirk(chip, entity_id);
++	if (quirk >= 0)
++		return quirk;
+ 	memset(visited, 0, sizeof(visited));
+ 	return __uac_clock_find_source(chip, entity_id, visited, validate);
+ }
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 6adde45..b5bf0fb 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1330,3 +1330,18 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 
+ 	return 0;
+ }
++
++/*
++  Lynx HiLo DACs fail to report the pin number of the clock source
++  correctly which causes the search for the clock source to fail. So
++  simply report the correct entity number for this DAC.
++ */
++int snd_usb_clock_find_source_quirk(struct snd_usb_audio *chip,
++				    int entity_id)
++{
++	switch (chip->usb_id) {
++	case USB_ID(0x247f, 0x3231): /* Lynx HiLo */
++		return 47;
++	}
++	return -1;
++}
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 192ff5c..82e6f5f 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -41,4 +41,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 					struct audioformat *fp,
+ 					unsigned int sample_bytes);
+ 
++int snd_usb_clock_find_source_quirk(struct snd_usb_audio *chip,
++				    int entity_id);
++
+ #endif /* __USBAUDIO_QUIRKS_H */
+-- 
+2.8.3
+
