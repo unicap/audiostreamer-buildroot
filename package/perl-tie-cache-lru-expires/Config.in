@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_TIE_CACHE_LRU_EXPIRES
+	bool "perl-tie-cache-lru-expires"
+	help
+	  Tie::Cache::LRU::Expires - Extends Tie::Cache::LRU with expiring
+
+	  http://search.cpan.org/~oesterhol/Tie-Cache-LRU-Expires-0.55/Expires.pm
