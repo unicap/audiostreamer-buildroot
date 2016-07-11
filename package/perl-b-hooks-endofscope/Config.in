@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_B_HOOKS_ENDOFSCOPE
+	bool "perl-b-hooks-endofscope"
+	help
+	  B::Hooks::EndOfScope - Execute code after a scope finished compilation
+
+	  http://search.cpan.org/~ether/B-Hooks-EndOfScope-0.21/lib/B/Hooks/EndOfScope.pm
