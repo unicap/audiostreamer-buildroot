@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PERL_TIE_CACHE_LRU
+	bool "perl-tie-cache-lru"
+	select BR2_PACKAGE_PERL_CARP_ASSERT
+	select BR2_PACKAGE_PERL_CLASS_VIRTUAL
+	select BR2_PACKAGE_PERL_ENUM
+	help
+	  Tie::Cache::LRU - A Least-Recently Used cache
+
+	  http://search.cpan.org/~mschwern/Tie-Cache-LRU-20150301/lib/Tie/Cache/LRU.pm
