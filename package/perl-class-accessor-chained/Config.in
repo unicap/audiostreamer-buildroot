@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_ACCESSOR_CHAINED
+	bool "perl-class-accessor-chained"
+	help
+	  Class::Accessor::Chained - make chained accessors
+
+	  http://search.cpan.org/~rclamp/Class-Accessor-Chained-0.01/lib/Class/Accessor/Chained.pm
