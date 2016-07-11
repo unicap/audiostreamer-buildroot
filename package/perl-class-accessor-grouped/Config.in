@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_ACCESSOR_GROUPED
+	bool "perl-class-accessor-grouped"
+	help
+	  Class::Accessor::Grouped - Lets you build groups of accessors
+
+	  http://search.cpan.org/~ribasushi/Class-Accessor-Grouped-0.10012/lib/Class/Accessor/Grouped.pm
