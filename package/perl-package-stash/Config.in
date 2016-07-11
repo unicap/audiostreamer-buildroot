@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_PACKAGE_STASH
+	bool "perl-package-stash"
+	help
+	  Package::Stash - routines for manipulating stashes
+
+	  http://search.cpan.org/~doy/Package-Stash-0.37/lib/Package/Stash.pm
