@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_TYPES_SERIALISER
+	bool "perl-types-serialiser"
+	help
+	  Types::Serialiser - simple data types for common serialisation formats
+
+	  http://search.cpan.org/~mlehmann/Types-Serialiser-1.0/Serialiser.pm
