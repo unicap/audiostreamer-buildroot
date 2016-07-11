@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_SQL_ABSTRACT_LIMIT
+	bool "perl-sql-abstract-limit"
+	help
+	  SQL::Abstract::Limit - portable LIMIT emulation
+
+	  http://search.cpan.org/~davebaird/SQL-Abstract-Limit-0.141/lib/SQL/Abstract/Limit.pm
