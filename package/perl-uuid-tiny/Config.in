@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_UUID_TINY
+	bool "perl-uuid-tiny"
+	help
+	  UUID::Tiny - Pure Perl UUID Support With Functional Interface
+
+	  http://search.cpan.org/~caugustin/UUID-Tiny-1.04/lib/UUID/Tiny.pm
