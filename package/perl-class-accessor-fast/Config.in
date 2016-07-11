@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_ACCESSOR_FAST
+	bool "perl-class-accessor-fast"
+	help
+	  Class::Accessor::Fast - Faster, but less expandable, accessors
+
+	  http://search.cpan.org/~kasei/Class-Accessor-0.34/lib/Class/Accessor/Fast.pm
