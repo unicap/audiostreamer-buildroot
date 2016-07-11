@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_INSPECTOR
+	bool "perl-class-inspector"
+	help
+	  Class::Inspector - Get information about a class and its structure
+
+	  http://search.cpan.org/~adamk/Class-Inspector-1.28/lib/Class/Inspector.pm
