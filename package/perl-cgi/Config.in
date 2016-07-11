@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CGI
+	bool "perl-cgi"
+	help
+	  CGI - Handle Common Gateway Interface requests and responses
+
+	  http://search.cpan.org/~leejo/CGI-4.31/lib/CGI.pod
