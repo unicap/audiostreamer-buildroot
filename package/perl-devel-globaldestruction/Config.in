@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PERL_DEVEL_GLOBALDESTRUCTION
+	bool "perl-devel-globaldestruction"
+	help
+          Devel::GlobalDestruction - Provides function returning the
+          equivalent of ${^GLOBAL_PHASE} eq 'DESTRUCT' for older perls.
+
+	  http://search.cpan.org/~haarg/Devel-GlobalDestruction-0.13/lib/Devel/GlobalDestruction.pm
