@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_CLASS_C3_COMPONENTISED
+	bool "perl-class-c3-componentised"
+	help
+	  Class::C3::Componentised
+
+	  http://search.cpan.org/~frew/Class-C3-Componentised-1.001000/lib/Class/C3/Componentised.pm
