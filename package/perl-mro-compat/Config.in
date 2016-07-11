@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MRO_COMPAT
+	bool "perl-mro-compat"
+	help
+	  MRO::Compat - mro::* interface compatibility for Perls < 5.9.5
+
+	  http://search.cpan.org/~bobtfish/MRO-Compat-0.12/lib/MRO/Compat.pm
