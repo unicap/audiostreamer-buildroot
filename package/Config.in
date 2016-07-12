@@ -1613,7 +1613,6 @@ endif
 	source "package/sconeserver/Config.in"
 	source "package/ser2net/Config.in"
 	source "package/shairport-sync/Config.in"
-	source "package/slimserver-vendor/Config.in"
 	source "package/slimserver/Config.in"
 	source "package/smcroute/Config.in"
 	source "package/socat/Config.in"
