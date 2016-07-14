@@ -18,7 +18,9 @@ echo /sbin/mdev > /proc/sys/kernel/hotplug
 mdev -s
 
 mount -o ro /dev/mmcblk0p1 /mnt/mmcblk0p1 
-echo "System:      We are aroio Version $(cat /mnt/mmcblk0p1/version)!"
+
+echo "aroio Version: $(cat /VERSION)"
+
 /etc/init.d/modules &
 /etc/init.d/gpio &
 /etc/init.d/checkstatus &> /dev/null &
