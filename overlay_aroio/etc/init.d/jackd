@@ -1,9 +1,0 @@
-#!/bin/sh
-
-echo "jackd:       Starting up..."
-jackd -ddummy -r96000 -p 1024 > /var/log/jackd.log 2>&1 &
-sleep 7
-echo "Starting netmanager..." >> /var/log/jackd.log
-jack_load netmanager >> /var/log/jackd.log
-echo "Netmanager started..." >> /var/log/jackd.log
-

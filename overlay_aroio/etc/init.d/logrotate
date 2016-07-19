@@ -1,9 +1,0 @@
-#!/bin/sh
-
-touch /var/log/logrotate
-
-while (true); do
-	rm /var/log/logrotate
-	logrotate -s /var/log/logrotate /etc/logrotate
-	sleep 3600
-done

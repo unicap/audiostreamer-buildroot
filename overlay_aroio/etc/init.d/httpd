@@ -1,7 +1,0 @@
-#!/bin/sh
-
-. /mnt/mmcblk0p1/userconfig.txt
-
-echo -e '*.php:/usr/bin/php-cgi\n/:aroio:'"$USERPASSWD" > /etc/httpd.conf
-
-httpd -h /opt/www -c /etc/httpd.conf
