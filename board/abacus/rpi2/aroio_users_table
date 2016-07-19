@@ -1,0 +1,1 @@
+slimserver -1 slimserver -1 * - /bin/sh - Slimserver user and group
