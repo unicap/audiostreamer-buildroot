@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /mnt/mmcblk0p1/userconfig.txt
+. /etc/aroio/userconfig
 
 case $SOUNDCARD in
 	'IQAudIO DAC')
@@ -14,15 +14,15 @@ case $SOUNDCARD in
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 dtoverlay=i2s-mmap
 dtoverlay=iqaudio-dac
 disable_overscan=1
 EOF
 
-		if ! ls -lah /dev/root | grep -q mmcblk0p2
-		then 	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		fi
+		#if ! ls -lah /dev/root | grep -q mmcblk0p2
+		#then 	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
+		#fi
 		cardmount ro
 		reboot
 	fi
@@ -40,7 +40,7 @@ EOF
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 dtparam=i2c_arm=on
 dtoverlay=i2s-mmap
 dtoverlay=hifiberry-dacplus
@@ -48,9 +48,9 @@ dtparam=spi=on
 disable_overscan=1
 EOF
 
-		if ! ls -lah /dev/root | grep -q mmcblk0p2
-		then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		fi
+		#if ! ls -lah /dev/root | grep -q mmcblk0p2
+		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
+		#fi
 		cardmount ro
 		reboot
 	fi
@@ -67,7 +67,7 @@ EOF
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 dtoverlay=i2s-mmap
 dtoverlay=hifiberry-digi
 disable_overscan=1
@@ -92,14 +92,14 @@ EOF
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 disable_overscan=1
 #fasttrack_pro
 EOF
 
-		if ! ls -lah /dev/root | grep -q mmcblk0p2
-		then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		fi
+		#if ! ls -lah /dev/root | grep -q mmcblk0p2
+		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
+		#fi
 		cardmount ro
 		reboot
 	fi
@@ -116,14 +116,14 @@ EOF
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 disable_overscan=1
 #fr_scarlett
 EOF
 
-		if ! ls -lah /dev/root | grep -q mmcblk0p2
-		then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		fi
+		#if ! ls -lah /dev/root | grep -q mmcblk0p2
+		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
+		#fi
 		cardmount ro
 		reboot
 	fi
@@ -140,14 +140,14 @@ EOF
 dtdebug=1
 max_usb_current=1
 disable_splash=1
-kernel=kernel7.img
+kernel=zImage
 disable_overscan=1
 #ni_audio8dj
 EOF
 
-		if ! ls -lah /dev/root | grep -q mmcblk0p2
-		then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		fi
+		#if ! ls -lah /dev/root | grep -q mmcblk0p2
+		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
+		#fi
 		cardmount ro
 		reboot
 	fi
