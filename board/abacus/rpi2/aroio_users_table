@@ -1,1 +1,4 @@
-slimserver -1 slimserver -1 * - /bin/sh - Slimserver user and group
+slimserver 1100 slimserver 1100 * - /bin/sh - Slimserver user and group
+httpd -1 httpd -1 * - /bin/sh - HTTPD user and group
+shairport -1 shairport -1 * - /bin/sh - shairport user and group
+squeezelite -1 squeezelite -1 * - /bin/sh - squeezelite user and group
