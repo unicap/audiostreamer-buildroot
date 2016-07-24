@@ -1,4 +1,6 @@
 dtdebug=1
+dtoverlay=iqaudio-dacplus
+dtparam=i2s=on
 max_usb_current=1
 disable_splash=1
 kernel=zImage
