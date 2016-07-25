@@ -1,0 +1,6 @@
+config BR2_PACKAGE_PERL_MODULE_BUILD
+	bool "perl-module-build"
+	help
+	  Build and install Perl modules
+
+	  https://metacpan.org/release/Module-Build
