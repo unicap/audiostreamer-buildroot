@@ -1,5 +1,5 @@
 #!/bin/sh
-. /mnt/mmcblk0p1/userconfig.txt
+. /etc/aroio/userconfig
 
 ## unklar, aber dabei
 modprobe bcm2835-gpiomem
@@ -12,16 +12,15 @@ modprobe uio_pdrv_genirq
   modprobe 8812au
 
 ## AUDIO
-#  modprobe bcm2708-dmaengine
-#  modprobe i2c-bcm2708
-#  modprobe snd-soc-bcm2708-i2s
-#  modprobe snd-soc-pcm512x
-#  modprobe snd-soc-pcm512x-i2c
+  modprobe i2c-bcm2708
+  modprobe snd-soc-pcm512x
+  modprobe snd-soc-bcm2835-i2s
+  modprobe snd-soc-pcm512x-i2c
 
 ## DAC erkennen
 case $SOUNDCARD in
 'IQAudIO DAC')
-	modprobe snd-soc-iqaudio-dac
+    modprobe snd-soc-iqaudio-dac
 	;;
 
 'HiFiBerry Digi')
