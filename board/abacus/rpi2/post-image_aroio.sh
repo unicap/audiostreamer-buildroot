@@ -19,6 +19,6 @@ cp -r ${BINARIES_DIR}/rpi-firmware/* ${EXPORTDIR}/ || echo "Error ignored"
 cp ${BINARIES_DIR}/*.dtb ${EXPORTDIR}/
 cp ${BINARIES_DIR}/zImage ${EXPORTDIR}/
 cp ${BINARIES_DIR}/config.txt ${EXPORTDIR}/
-cp -r ${DISTDIR}/brutefir ${EXPORTDIR}/
+cp -r ${DISTDIR}/* ${EXPORTDIR}/
 
 echo ">>DONE"
