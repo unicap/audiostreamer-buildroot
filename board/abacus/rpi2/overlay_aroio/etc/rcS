@@ -17,16 +17,19 @@ mount -t devpts devpts /dev/pts
 echo /sbin/mdev > /proc/sys/kernel/hotplug
 mdev -s
 
-mount -o ro /dev/mmcblk0p1 /mnt/mmcblk0p1 
+mount -o ro /dev/mmcblk0p1 /mnt/mmcblk0p1
 
 echo "aroio Version: $(cat /VERSION)"
 
-/etc/init.d/modules &
-/etc/init.d/gpio &
-/etc/init.d/checkstatus &> /dev/null &
+# If there is a userconfig: copy it
+if [ -e /mnt/mmcblk0p1/userconfig.txt ]; then
+    cp /mnt/mmcblk0p1/userconfig.txt /etc/aroio/userconfig
+fi
 
-/etc/init.d/checkuserconfig
-/etc/init.d/checksoundcard
+#/etc/init.d/gpio &
+#/etc/init.d/checkstatus &> /dev/null &
+
+#/etc/init.d/checkuserconfig
 
 mount none -t tmpfs -o defaults /var
 mount none -t tmpfs -o defaults /tmp
@@ -37,12 +40,13 @@ mount none -t tmpfs -o defaults /dev/shm
 
 mkdir -p /var/run/dbus
 
-export LANG=en_US.utf8
-/etc/init.d/lms extract &
+/etc/init.d/network &
+/etc/init.d/S29netplug start &
 
+export LANG=en_US.utf8
 mkdir /var/log
 
-/etc/init.d/checklms &
+#/etc/init.d/checklms &
 /etc/init.d/amixer &
 echo "System:      Copying default filters..."
 cp -ar /mnt/mmcblk0p1/brutefir/*.dbl /home/sftparoio
@@ -50,14 +54,24 @@ tar xf /mnt/mmcblk0p1/filter.tgz -C /home/sftparoio && mv /home/sftparoio/filter
 chown -R sftparoio /home/sftparoio
 /etc/init.d/brutefir &
 
-/etc/init.d/checkfilters &
-/etc/init.d/network &
+#/etc/init.d/checkfilters &
 touch /var/log/shairportlog.txt
-sleep 5
-/usr/bin/startstreamer.sh &
-/etc/init.d/httpd
-loadkmap < /etc/de.map
+
 chmod 777 /dev/null && dropbear
+
+/etc/init.d/checksoundcard
+
+
+# /usr/bin/startstreamer.sh &
+
+(
+    /etc/init.d/modules
+    /etc/init.d/squeezelite-jack start
+)&
+
+/etc/init.d/httpd start
+
+loadkmap < /etc/de.map
 /etc/init.d/logrotate &> /dev/null &
 /etc/init.d/ntpd &> /dev/null &
 
