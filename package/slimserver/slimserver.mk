@@ -11,6 +11,7 @@ SLIMSERVER_LICENSE = GPL,
 SLIMSERVER_LICENSE_FILES = Licenses.txt
 SLIMSERVER_DEPENDENCIES = perl expat \
 	perl-anyevent \
+	perl-archive-zip \
 	perl-audio-cuefile-parser \
 	perl-audio-scan \
 	perl-cgi \
@@ -49,6 +50,7 @@ SLIMSERVER_DEPENDENCIES = perl expat \
 	perl-image-scale \
 	perl-io-aio \
 	perl-io-interface \
+	perl-io-socket-ssl \
 	perl-io-string \
 	perl-json-xs \
 	perl-json-xs-versiononeandtwo \
@@ -92,7 +94,14 @@ define SLIMSERVER_INSTALL_TARGET_CMDS
 		cp -ar $(@D)/$${d} $(TARGET_DIR)/opt/slimserver/ \
 	;done
 	$(INSTALL) -d -m 0755 $(TARGET_DIR)/opt/slimserver/CPAN
+	#for f in $(@D)/CPAN/*; do \
+	#	echo `basename $$f`; \
+	#	if [ `basename $$f` != arch ]; then \
+	#		cp -ar $$f $(TARGET_DIR)/opt/slimserver/CPAN \
+	#	;fi \
+	#;done
 	cp -ar $(@D)/CPAN/DBIx $(TARGET_DIR)/opt/slimserver/CPAN/
+	cp -ar $(@D)/CPAN/Media $(TARGET_DIR)/opt/slimserver/CPAN/
 endef
 
 $(eval $(generic-package))
