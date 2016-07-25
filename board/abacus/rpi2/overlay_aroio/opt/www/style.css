@@ -43,11 +43,35 @@
 		width: 10em;
 	}
 	
-	#content
+	.content
 	{
 		position:relative;
 		width: 600px;		
 	}
+	.pageHead
+	{
+
+	}
+	.fltrSelect
+	{
+		position:relative;
+		width: 600px;;
+	}
+	.fltrSelect fieldset
+	{
+		margin-bottom: 0.5em;
+	}
+	.fltrSelect fieldset button
+	{
+		width: 6em;
+	}
+	.volume
+	{
+		width: 2em;
+		margin-left: .5em;
+		margin-left: .5em;
+	}
+
 	.system
 	{
 		max-width: 570px;
@@ -74,7 +98,7 @@
 		margin-left: 7em;
 		position: absolute;
 		z-index: 98;
-		width: 250px;
+		width: 250px;<
 	}
 	.tooltip:hover:before
 	{
@@ -88,9 +112,50 @@
 		position: absolute;
 		z-index: 99;
 	}
+
+
+	.button_tooltip
+	{
+		display: inline;
+		position: relative;
+	}
+	.button_tooltip:hover:after
+	{
+		background: #333;
+		background: rgba(0,0,0,.8);
+		border-radius: 5px;
+		bottom: 20px;
+		color: #fff;
+		content: attr(title);
+		left: 10%;
+		padding: 10px 10px 10px 10px;
+		margin-left: 1em;
+		position: absolute;
+		z-index: 98;
+		width: 250px;
+	}
+	.button_tooltip:hover:before
+	{
+		border: solid;
+		border-color: #333 transparent;
+		border-width: 6px 6px 0 6px;
+		margin-left: 4em;
+		bottom: 15px;
+		content: "";
+		left: 10%;
+		position: absolute;
+		z-index: 99;
+	}
+
+
 	.actiongroup
 	{
 		margin: 0 0 0 .5em;
 		width: 12em;
+	}
+
+	.clearfix
+	{
+		clear:both;
 	}
 </style>

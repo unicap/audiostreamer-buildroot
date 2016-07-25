@@ -6,7 +6,7 @@
 	if($_GET["lang"] === "en") $lang='en'; else $lang='de';
 
 	$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
-	if ( isset($_POST['submit']) )
+	if ( isset($_POST['submit']) || isset($_POST['audiosettings_submit']) )
 	{
 		if ($_POST['DHCP'] == "OFF")
 		{
@@ -77,6 +77,16 @@
 		$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
 	}
 
+	if ( isset($_POST['audiosettings_submit']) )
+	{
+		shell_exec('/usr/bin/killall brutefir &> /dev/null' );
+		shell_exec('/usr/bin/killall jackd &> /dev/null' );
+		shell_exec('/usr/bin/killall brutefir_connect_netjackports &> /dev/null' );
+		shell_exec('/usr/bin/stopstreamer');
+		shell_exec('/etc/init.d/brutefir &> /dev/null' );
+		exec('/usr/bin/startstreamer.sh &> /dev/null &');
+		shell_exec('/etc/init.d/amixer &> /dev/null &');
+	}
 ?>
 
 <html>
@@ -88,12 +98,17 @@
 	<a href="http://www.abacus-electronics.de" target="_blank"><img src="abacus_logo_wide.png" border="0"></a>
 
 	<body>
+
 		<br><a href="<?php echo $PHP_SELF?>?lang=en" target=""><img src="english.png" border="0"></a>
 		<a href="<?php echo $PHP_SELF?>?lang=de" target=""><img src="german.png" border="0"></a>
 		<a href="index.php" target=""><? print ${linktext_configuration._.$lang} ?></a>
 		<a href="system.php" target=""><? print ${linktext_system._.$lang} ?></a>
-		<a href="credits.php" target=""><? print ${linktext_credits._.$lang} ?></a>
-
+		<a href="measurement.php" target=""><? print ${linktext_measurement._.$lang} ?></a>
+		<!-- <a href="credits.php" target=""><? print ${linktext_credits._.$lang} ?></a> -->
+		<? if ($ini_array['BRUTEFIR'] == "ON")
+		{?>
+			<a href="brutefir.php"target=""><? print ${linktext_brutefir._.$lang} ?></a> <?
+		}?>
 		<h1> <? print ${title_main._.$lang} ; if ( isset($_POST['submit'])) print $_POST['HOSTNAME']; else print $ini_array["HOSTNAME"] ?></h1>
 
 		<?if(!$error && isset($_POST['submit']))
@@ -104,7 +119,7 @@
 		else  echo $error;?>
 
 		<form id="Network settings" Name="Network settings" action="" method="post">
-			<div id="content">
+			<div class="content">
 			<fieldset>
 				<legend><? print ${network_form._.$lang} ; ?></legend>
 
@@ -172,6 +187,7 @@
 									}
 									else echo'<option>'.$ssid.'</option>';
 								}
+								echo '<option>Aroio-Access-Point</option>';
 							}
 							//elseif (isset($_POST['WLANSSID'])) echo'<option selected>'.$_POST['WLANSSID'].'</option>';
 							else echo'<option selected>'.$ini_array['WLANSSID'].'</option>';
@@ -199,7 +215,7 @@
 			</fieldset>
 			</div>
 
-			<div id="content">
+			<div class="content">
 			<fieldset>
 				<legend> <? print ${squeeze_serv_form._.$lang} ; ?> </legend>
 				<a style="text-decoration: none href="#" title="<? print ${helptext_servername._.$lang} ?>"class="tooltip">
@@ -223,11 +239,11 @@
 			</fieldset>
 			</div>
 
-			<div id="content">
+			<div class="content">
 			<fieldset>
 				<legend> <? print ${audio_form._.$lang} ; ?> </legend>
 				<a style="text-decoration: none href="#" title="<? print ${helptext_playername._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Squeeze-player name"> <? print ${squeeze_player_name._.$lang} ; ?> </label></span></a>
+						<span title=""><label for="Player name"> <? print ${player_name._.$lang} ; ?> </label></span></a>
 				<? if ( $ini_array["PLAYERNAME"] == "" ) { $ini_array["PLAYERNAME"] = $ini_array["HOSTNAME"]; } ?>
 				<input class="actiongroup" type="text" name="PLAYERNAME" value="<? print $ini_array["PLAYERNAME"] ?>">
 				<br>
@@ -245,7 +261,65 @@
 					<input class="actiongroup" type="radio" name="MSCODING" value="ON"> <? print ${mscoded_on._.$lang} ; ?>
 					<input class="actiongroup" type="radio" name="MSCODING" value="OFF" checked> <? print ${mscoded_off._.$lang} ; ?>
 					<br>
-				<?}
+				<? } ?>
+
+                                <a style="text-decoration: none href="#" title="<? print ${helptext_convolution._.$lang} ?>"class="tooltip">
+                                                <span title=""><label for="Convolution"> <? print ${convolution._.$lang} ; ?> </label></span></a>
+                                <? if ($ini_array["BRUTEFIR"] == "ON") { ?>
+                                        <input class="actiongroup" type="radio" name="BRUTEFIR" value="ON" checked> <? print ${convolution_on._.$lang} ; ?>
+                                        <input class="actiongroup" type="radio" name="BRUTEFIR" value="OFF"> <? print ${convolution_off._.$lang} ; ?>
+                                        <br>
+				
+                                       <a style="text-decoration: none href="#" title="<? print ${helptext_audioplayer._.$lang} ?>"class="tooltip">
+                                                <span title=""><label for="Audioplayer"> <? print ${audioplayer_convolution._.$lang} ; ?> </label></span></a>
+                                        <? switch ($ini_array["AUDIOPLAYER"]) {
+                                        
+						case "squeezelite":
+							?> <input class="actiongroup" type="radio" name="AUDIOPLAYER" value="squeezelite" checked> <? print ${squeezelite_only._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="gmediarender"> <? print ${squeezelite_and_upnp._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="netjack"> <? print ${squeezelite_and_netjack._.$lang} ; ?>
+                                                	<br> <?
+							break;
+
+                                    		case "gmediarender":
+                                         		?> <input class="actiongroup" type="radio" name="AUDIOPLAYER" value="squeezelite"> <? print ${squeezelite_only._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="gmediarender" checked> <? print ${squeezelite_and_upnp._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="netjack"> <? print ${squeezelite_and_netjack._.$lang} ; ?>
+                                                	<br> <?
+							break; 
+
+                                    		case "netjack":
+                                         		?> <input class="actiongroup" type="radio" name="AUDIOPLAYER" value="squeezelite"> <? print ${squeezelite_only._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="gmediarender" checked> <? print ${squeezelite_and_upnp._.$lang} ; ?>
+                                                	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="netjack" checked> <? print ${squeezelite_and_netjack._.$lang} ; ?>
+                                                	<br> <?
+							break; 
+
+
+					}
+                                }
+                                else
+                                {?>
+                                        <input class="actiongroup" type="radio" name="BRUTEFIR" value="ON"> <? print ${convolution_on._.$lang} ; ?>
+                                        <input class="actiongroup" type="radio" name="BRUTEFIR" value="OFF" checked> <? print ${convolution_off._.$lang} ; ?>
+                                        <br>
+                             	       <a style="text-decoration: none href="#" title="<? print ${helptext_audioplayer._.$lang} ?>"class="tooltip">
+                                                <span title=""><label for="Audioplayer"> <? print ${audioplayer._.$lang} ; ?> </label></span></a>
+                                        <? if ($ini_array["AUDIOPLAYER"] == "squeezelite")
+                               		{?>
+                                        	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="squeezelite" checked> <? print ${audioplayer_squeezelite._.$lang} ; ?>
+                                                <input class="actiongroup" type="radio" name="AUDIOPLAYER" value="gmediarender"> <? print ${audioplayer_gmediarender._.$lang} ; ?>
+                                                <br>
+                                         <?}
+                                         else
+                                         {?>
+                                         	<input class="actiongroup" type="radio" name="AUDIOPLAYER" value="squeezelite"> <? print ${audioplayer_squeezelite._.$lang} ; ?>
+                                                <input class="actiongroup" type="radio" name="AUDIOPLAYER" value="gmediarender" checked> <? print ${audioplayer_gmediarender._.$lang} ; ?>
+                                                <br>
+                                          <?}
+                                     ?>
+
+                                <?}
 				?>
 
 				<a style="text-decoration: none href="#" title="<? print ${helptext_volume._.$lang} ?>"class="tooltip">
@@ -253,46 +327,29 @@
 					<? print_optgroup("VOLUME",$arr_volume,$ini_array["VOLUME"]); ?>
 					<br>
 
-				<a style="text-decoration: none href="#" title="<? print ${helptext_alsaoutbuff._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Output buffer in KB"> <? print ${alsaoutbuff._.$lang} ; ?></label></span></a>
-					<? print_optgroup("ALSAOUTBUFF",$arr_alsa,$ini_array["ALSAOUTBUFF"]); ?>
-				<br>
-
-				<a style="text-decoration: none href="#" title="<? print ${helptext_alsaperiod._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Period size"> <? print ${alsaperiod._.$lang} ; ?> </label></span></a>
-					<? print_optgroup("ALSAPERIOD",$arr_alsa,$ini_array["ALSAPERIOD"]); ?>
-				<br>
-				<a style="text-decoration: none href="#" title="<? print ${helptext_alsasamplefmt._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Sample format"> <? print ${alsasamplefmt._.$lang} ; ?> </label></span></a>
-					<? print_optgroup("ALSASAMPLEFMT",$arr_samplingres,$ini_array["ALSASAMPLEFMT"]) ?>
-				<br>
-
-				<a style="text-decoration: none href="#" title="<? print ${helptext_alsammap._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Use MMAP"> <? print ${alsammap._.$lang} ; ?> </label></span></a>
-				<?
-				if ($ini_array["ALSAMMAP"] == "1")
-					{?>
-					<input class="actiongroup" type="radio" name="ALSAMMAP" value="1" checked> <? print ${alsammap_on._.$lang} ; ?>
-					<input class="actiongroup" type="radio" name="ALSAMMAP" value="0"> <? print ${alsammap_off._.$lang} ; ?>
-					<br>
-				<?}
-				else
-				{?>
-					<input class="actiongroup" type="radio" name="ALSAMMAP" value="1"> <? print ${alsammap_on._.$lang} ; ?>
-					<input class="actiongroup" type="radio" name="ALSAMMAP" value="0" checked> <? print ${alsammap_off._.$lang} ; ?>
-					<br>
-				<?}
+				<? 
+				if ($ini_array["BRUTEFIR"] == "ON"){ ?>
+					<a style="text-decoration: none href="#" title="<? print ${helptext_jack_buffer._.$lang} ?>"class="tooltip">
+					<span title=""><label for="Jackbuffer"> <? print ${jack_buffer._.$lang} ; ?> </label></span></a>
+					<?$arr_jackbuffer= array(2048,4096,8192);
+				 	print_optgroup("JACKBUFFER",$arr_jackbuffer,$ini_array["JACKBUFFER"]); 
+				 	?><br><?
+				 	} 
 				?>
 
-				<a style="text-decoration: none href="#" title="<? print ${helptext_streambuff._.$lang} ?>"class="tooltip">
-						<span title=""><label for="Streambuffer size"> <? print ${alsastreambuff._.$lang} ; ?></label></span></a>
-					<? print_optgroup("STREAMBUFF",$arr_alsa,$ini_array["STREAMBUFF"]);  ?>
-				<br>
-			</fieldset>
+				 	<a style="text-decoration: none href="#" title="<? print ${helptext_soundcard._.$lang} ?>"class="tooltip">
+					<span title=""><label for="Soundcard"> <? print ${soundcard._.$lang} ; ?> </label></span></a>
+					<?$arr_soundcard= array('IQAudIO DAC','HiFiBerry DAC+','HiFiBerry Digi','M-Audio Fast Track Pro','Lynx Hilo','Focusrite Scarlett','NI Audio 8 DJ');
+					//<?$arr_soundcard= array('IQAudIO DAC','HiFiBerry DAC+','HiFiBerry Digi','M-Audio Fast Track Pro','Focusrite Scarlett');
+				 	print_optgroup("SOUNDCARD",$arr_soundcard,$ini_array["SOUNDCARD"]);
+				?>
+				<br><br>
+				<input type="submit" value=" <? print ${button_submit_audiosettings._.$lang} ?> " name="audiosettings_submit">
 			</div>
 			<br>
-			<input type="submit" value="submit" name="submit">
-			<input type="submit" value="reboot" name="reboot">
+
+			<input type="submit" value=" <? print ${button_submit._.$lang} ?> " name="submit">
+			<input type="submit" value=" <? print ${button_reboot._.$lang} ?> " name="reboot">
 		</form>
 	</body>
 <? unset($_POST['submit']);?>
