@@ -10,3 +10,10 @@ fi
 echo -n $(git log --format="Commit: %h from %aD" -n 1) > ${TARGET_DIR}/VERSION
 echo -n $(git log --format="%ct" -n 1) > ${TARGET_DIR}/VERSION_TIMESTAMP
 
+# create required empty directories
+
+mkdir -p ${TARGET_DIR}/mnt/mmcblk0p1
+mkdir -p ${TARGET_DIR}/mnt/ext
+mkdir -p ${TARGET_DIR}/etc/aroio
+
+
