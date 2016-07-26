@@ -21,4 +21,6 @@ cp ${BINARIES_DIR}/zImage ${EXPORTDIR}/
 cp ${BINARIES_DIR}/config.txt ${EXPORTDIR}/
 cp -r ${DISTDIR}/* ${EXPORTDIR}/
 
+rm -f ${EXPORTDIR}/cmdline.txt
+
 echo ">>DONE"
