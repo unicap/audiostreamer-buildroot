@@ -2,6 +2,17 @@
 
 . /etc/aroio/userconfig
 
+cardmount() {
+    case "$1" in
+	rw)
+	    mount -o remount,rw /mnt/mmcblk0p1
+	    ;;
+	ro)
+	    mount -o remount,ro /mnt/mmcblk0p1
+	    ;;
+    esac
+}
+
 case $SOUNDCARD in
 	'IQAudIO DAC')
 	if ! grep -q iqaudio /mnt/mmcblk0p1/config.txt
