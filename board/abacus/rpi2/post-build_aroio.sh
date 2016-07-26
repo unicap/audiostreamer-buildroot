@@ -15,5 +15,8 @@ echo -n $(git log --format="%ct" -n 1) > ${TARGET_DIR}/VERSION_TIMESTAMP
 mkdir -p ${TARGET_DIR}/mnt/mmcblk0p1
 mkdir -p ${TARGET_DIR}/mnt/ext
 mkdir -p ${TARGET_DIR}/etc/aroio
+mkdir -p ${TARGET_DIR}/home/sftparoio
+mkdir -p ${TARGET_DIR}/etc/bluetooth/passkeys
+mkdir -p ${TARGET_DIR}/etc/dbus-1/session.d
 
 
