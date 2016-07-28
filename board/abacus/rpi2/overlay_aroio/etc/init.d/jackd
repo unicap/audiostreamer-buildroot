@@ -1,9 +1,46 @@
 #!/bin/sh
 
-echo "jackd:       Starting up..."
-jackd -ddummy -r96000 -p 1024 > /var/log/jackd.log 2>&1 &
-sleep 7
-echo "Starting netmanager..." >> /var/log/jackd.log
-jack_load netmanager >> /var/log/jackd.log
-echo "Netmanager started..." >> /var/log/jackd.log
+NAME=jackd
+DAEMON=/usr/bin/jackd
+PIDFILE=/var/run/$NAME.pid
+DAEMON_ARGS="-ddummy -r96000 -p 1024"
 
+start() {
+    printf "Starting $NAME: "
+    # Start jackd via /bin/bash to allow proper redirection of stdout to a log file
+    if start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background \
+			 --start-as /bin/bash \
+			 -- -c "exec $DAEMON $DAEMON_ARGS >/var/log/jackd.log 2>&1"
+    then
+	echo "OK"
+	printf "Loading jack netmanager: "
+	/usr/bin/jack_wait -w
+	jack_load netmanager >> /var/log/jackd.log \
+	    && echo "OK" || echo "FAIL"
+    else
+	echo "FAIL"
+    fi
+}
+
+stop() {
+        printf "Stopping $NAME: "
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE \
+                && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 1
+                start
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                exit 1
+esac
