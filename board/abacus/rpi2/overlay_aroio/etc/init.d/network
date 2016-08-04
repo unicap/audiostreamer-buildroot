@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /mnt/mmcblk0p1/userconfig.txt
+. /etc/aroio/userconfig
 
 sleep 2
 killall udhcpc &> /dev/null
