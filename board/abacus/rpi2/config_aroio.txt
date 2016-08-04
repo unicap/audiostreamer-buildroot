@@ -1,8 +1,7 @@
 dtdebug=1
+dtoverlay=i2s-mmap
 dtoverlay=iqaudio-dacplus
-dtparam=i2s=on
 max_usb_current=1
 disable_splash=1
 kernel=zImage
 disable_overscan=1
-#ni_audio8dj
