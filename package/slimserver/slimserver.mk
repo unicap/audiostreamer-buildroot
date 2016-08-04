@@ -9,7 +9,9 @@ SLIMSERVER_SITE = $(call github,Logitech,slimserver,$(SLIMSERVER_VERSION))
 
 SLIMSERVER_LICENSE = GPL, 
 SLIMSERVER_LICENSE_FILES = Licenses.txt
-SLIMSERVER_DEPENDENCIES = perl expat \
+SLIMSERVER_DEPENDENCIES = \
+	libmediascan \
+	perl expat \
 	perl-anyevent \
 	perl-archive-zip \
 	perl-audio-cuefile-parser \
