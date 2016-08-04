@@ -1,22 +1,40 @@
 #!/bin/sh
 
+. /etc/aroio/userconfig
+
 NAME=jackd
 DAEMON=/usr/bin/jackd
 PIDFILE=/var/run/$NAME.pid
 DAEMON_ARGS="-ddummy -r96000 -p 1024"
+JACKBUFFER=8192
+
+if [ "$SOUNDCARD" = "M-Audio Fast Track Pro" ] && [ "$CHANNELS" = "4" ]
+then	DAEMON_ARGS="-R -P 10 -dalsa -P -dftp4ch -r"$RATE"000 -p $JACKBUFFER -n2"
+else	DAEMON_ARGS="-R -P 10 -dalsa -P -C -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n2"
+fi
 
 start() {
     printf "Starting $NAME: "
     # Start jackd via /bin/bash to allow proper redirection of stdout to a log file
     if start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background \
-			 --start-as /bin/bash \
+			 --startas /bin/sh \
 			 -- -c "exec $DAEMON $DAEMON_ARGS >/var/log/jackd.log 2>&1"
     then
 	echo "OK"
-	printf "Loading jack netmanager: "
-	/usr/bin/jack_wait -w
-	jack_load netmanager >> /var/log/jackd.log \
-	    && echo "OK" || echo "FAIL"
+	if [ "$AUDIOPLAYER" = "netjack"  ]
+	then
+	    printf "Loading jack netmanager: "
+	    if [ "$(cat /sys/class/net/eth0/carrier)" = "1" ]
+	    then
+		/usr/bin/jack_wait -w
+		jack_load netmanager >> /var/log/jackd.log \
+		    && echo "OK" || echo "FAIL"
+		/etc/init.d/brutefir_connect_netjackports &> /dev/null &
+	    else
+		echo "No network carrier found, cannot start netjack!" >> /var/log/jackd.log
+		echo "No network carrier, not starting"
+	    fi
+	fi
     else
 	echo "FAIL"
     fi
