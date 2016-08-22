@@ -1,0 +1,29 @@
+From 63adb358cebd863e5c825a9cff0547e103ab4417 Mon Sep 17 00:00:00 2001
+From: Arne Caspari <arne@unicap-imaging.org>
+Date: Sun, 14 Aug 2016 18:27:57 +0200
+Subject: [PATCH] Use intltool in configure
+
+---
+ configure.ac | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index cfa75a7..dfb6b5f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -4,9 +4,11 @@ AC_CANONICAL_SYSTEM
+ AC_CONFIG_MACRO_DIRS([m4])
+ AC_CONFIG_HEADERS(config.h)
+ AM_INIT_AUTOMAKE
+-
+ AM_DISABLE_STATIC
+ 
++
++IT_PROG_INTLTOOL
++
+ dnl @synopsis AC_C99_FUNC_LRINTF
+ dnl
+ dnl Check whether C99's lrintf function is available.
+-- 
+2.9.0
+
