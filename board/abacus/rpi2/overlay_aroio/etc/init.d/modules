@@ -9,7 +9,7 @@ modprobe uio_pdrv_genirq
 
 ## WIFI
   modprobe 8192cu
-  modprobe 8812au
+  modprobe rtl8821au
 
 ## AUDIO
   modprobe i2c-bcm2708
