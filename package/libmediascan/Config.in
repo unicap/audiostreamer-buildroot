@@ -1,6 +1,7 @@
 config BR2_PACKAGE_LIBMEDIASCAN
 	bool "libmediascan"
 	select BR2_PACKAGE_LIBEXIF
+	select BR2_PACKAGE_PERL
 	
 	help
           libmediascan is an evolution of the work done on the Perl
