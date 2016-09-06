@@ -9,8 +9,8 @@ LIBMEDIASCAN_SOURCE = libmediascan-$(LIBMEDIASCAN_VERSION).tar.gz
 LIBMEDIASCAN_SITE = https://github.com/Logitech/slimserver-vendor/raw/public/7.9/CPAN
 LIBMEDIASCAN_INSTALL_STAGING = YES
 LIBMEDIASCAN_INSTALL_TARGET = YES
-LIBMEDIASCAN_CONF_OPTS = 
-LIBMEDIASCAN_DEPENDENCIES = libexif perl
+LIBMEDIASCAN_CONF_OPTS = --with-FFmpeg=
+LIBMEDIASCAN_DEPENDENCIES = libexif host-perl perl
 LIBMEDIASCAN_AUTORECONF = YES
 LIBMEDIASCAN_AUTORECONF_OPTS = -i
 define LIBMEDIASCAN_PRE_CONFIGURE_FIXUP
@@ -40,6 +40,18 @@ define LIBMEDIASCAN_BUILD_PERL_MODULE_FIXUP
 			INSTALLVENDORMAN3DIR=/usr/share/man/man3 \
 			--with-lms-includes=../../include \
 			--with-lms-libs=../../src/.libs \
+			--with-ffmpeg-includes=$(STAGING_DIR)/usr/include \
+			--with-ffmpeg-libs=$(STAGING_DIR)/usr/lib \
+			--with-exif-includes=$(STAGING_DIR)/usr/include \
+			--with-exif-libs=$(STAGING_DIR)/usr/lib \
+			--with-jpeg-includes=$(STAGING_DIR)/usr/include \
+			--with-jpeg-libs=$(STAGING_DIR)/usr/lib \
+			--with-gif-includes=$(STAGING_DIR)/usr/include \
+			--with-gif-libs=$(STAGING_DIR)/usr/lib \
+			--with-png-includes=$(STAGING_DIR)/usr/include \
+			--with-png-libs=$(STAGING_DIR)/usr/lib \
+			--with-bdb-includes=$(STAGING_DIR)/usr/include \
+			--with-bdb-libs=$(STAGING_DIR)/usr/lib \
 	);
 
 	sed "s~/usr/bin/gcc~$(TARGET_CC) -Os~" -i $(@D)/bindings/perl/Makefile
