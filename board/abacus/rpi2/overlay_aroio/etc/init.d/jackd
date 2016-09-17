@@ -6,7 +6,7 @@ NAME=jackd
 DAEMON=/usr/bin/jackd
 PIDFILE=/var/run/$NAME.pid
 DAEMON_ARGS="-ddummy -r96000 -p 1024"
-JACKBUFFER=8192
+JACKBUFFER=1024
 
 if [ "$SOUNDCARD" = "M-Audio Fast Track Pro" ] && [ "$CHANNELS" = "4" ]
 then	DAEMON_ARGS="-R -P 10 -dalsa -P -dftp4ch -r"$RATE"000 -p $JACKBUFFER -n2"
