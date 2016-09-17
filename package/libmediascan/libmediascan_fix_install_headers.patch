@@ -1,0 +1,28 @@
+From f538f542a06630a97d6a6e53adc8c374e072ceec Mon Sep 17 00:00:00 2001
+From: Arne Caspari <arne@unicap-imaging.org>
+Date: Sat, 17 Sep 2016 10:54:50 +0200
+Subject: [PATCH] Fix: Do not install headers
+
+---
+ src/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 8ba4d62..9d90788 100755
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -31,8 +31,8 @@ libmediascan_la_CFLAGS = -Wall -I$(top_srcdir)/include
+ libmediascan_la_LDFLAGS = -version-info 0:0:0
+ 
+ # XXX only include in dist, not install
+-include_HEADERS = audio.h buffer.h common.h error.h mediascan.h progress.h fixed.h queue.h \
++EXTRA_DIST = audio.h buffer.h common.h error.h mediascan.h progress.h fixed.h queue.h \
+   image.h image_jpeg.h image_png.h image_gif.h image_bmp.h result.h thumb.h thread.h util.h video.h \
+   database.h tag.h tag_item.h \
+   libdlna/containers.h libdlna/dlna.h libdlna/dlna_internals.h libdlna/profiles.h \
+-  NSString+SymlinksAndAliases.h
+\ No newline at end of file
++  NSString+SymlinksAndAliases.h
+-- 
+2.9.3
+
