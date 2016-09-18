@@ -83,7 +83,7 @@ connect_open()
 	ifconfig wlan0 up
 	iwconfig wlan0 mode managed
 	iwconfig wlan0 essid "$WLANSSID"
-	udhcpc -b -i wlan0 -x hostname  "$HOSTNAME"
+	udhcpc -t 6 -b -i wlan0 -x hostname:"$HOSTNAME" &> /dev/null
 }
 
 connect_wep()
@@ -94,7 +94,7 @@ connect_wep()
 	## Works with "shared key in hex!"
 	iwconfig wlan0 key "$WLANPWD"
 	iwconfig wlan0 mode managed
-	udhcpc -b -i wlan0 -x hostname  "$HOSTNAME"
+	udhcpc -b -t 6 -i wlan0 -x hostname:"$HOSTNAME" &> /dev/null
 }
 
 connect_wpa()
@@ -102,13 +102,13 @@ connect_wpa()
 	echo "             Setting up connection to WPA encrypted network \""$WLANSSID"\" now."
 	wpa_passphrase "$WLANSSID" "$WLANPWD" > /var/wpa_supplicant.conf
 	wpa_supplicant -B -Dwext -iwlan0 -c /var/wpa_supplicant.conf &> /dev/null
-	udhcpc -b -i wlan0 -x hostname: "$HOSTNAME" > /dev/null &> /dev/null
+	udhcpc -t 6 -b -i wlan0 -x hostname:"$HOSTNAME" &> /dev/null
 }
 
 eth_dhcp()
 {
 	echo "             using dhcp as requested per userconfig-file..."
-	udhcpc -b -i eth0 -x hostname:"$HOSTNAME" > /dev/null &> /dev/null
+	udhcpc -b -i eth0 -x hostname:"$HOSTNAME" &> /dev/null
 	if [ "$WLAN" = "true"  ]
 	then
 		ifconfig wlan0 up
