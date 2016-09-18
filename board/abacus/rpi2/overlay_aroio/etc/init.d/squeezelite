@@ -1,23 +1,42 @@
 #!/bin/sh
 
+. /etc/aroio/userconfig
+
+. /opt/shutils.sh
+
 NAME=squeezelite
 USER=squeezelite
 GROUP=squeezelite
 DAEMON=/usr/bin/squeezelite
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-M AroioEX"
+DAEMON_ARGS="-M AroioEX -p 99 -z"
+
 
 start() {
-        printf "Starting $NAME: "
-        start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
-                -- $DAEMON_ARGS \
-                && echo "OK" || echo "FAIL"
+    cmark
+    clog -n "Starting $NAME: "
+    ALSAPARAMS="-a 8192:1024:32:0 -b 1024:8192"
+    RATE=""
+    RESAMPLE=""
+    if [ "$MSCODING" = "ON" ]
+    then
+	OUTPUT="-o mscoded"
+	clog -n " (Output is MS-coded!) "
+    else
+	OUTPUT="-o plughw:0,0"
+	clog -n " (Output is stereo!) "
+    fi
+    DAEMON_ARGS="$DAEMON_ARGS $ALSAPARAMS $OUTPUT"
+    start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --exec "$DAEMON" \
+                      -- $DAEMON_ARGS \
+        && clog "OK" || clog "FAIL"
+    clogn "squeezelite cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
-        printf "Stopping $NAME: "
+        clog -n "Stopping $NAME: "
         start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-                && echo "OK" || echo "FAIL"
+                && clog "OK" || clog "FAIL"
 }
 
 case "$1" in
