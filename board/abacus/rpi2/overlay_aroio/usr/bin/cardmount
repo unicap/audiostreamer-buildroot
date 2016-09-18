@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case $1 in
+	rw)
+	mount -o remount,rw /mnt/mmcblk0p1
+	;;
+
+	ro)
+	mount -o remount,ro /mnt/mmcblk0p1
+	;;
+esac
