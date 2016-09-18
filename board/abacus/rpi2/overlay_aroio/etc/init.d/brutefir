@@ -124,27 +124,30 @@ prepare_config() {
 
 
 start() {
-    printf "Preparing BruteFIR config: "
+    cmark
+    clog -n "Preparing BruteFIR config: "
     prepare_config
-    echo "OK"
-    printf "Starting $DAEMON_NAME: "
+    clog "OK"
+    cmark
+    clog -n "Starting $DAEMON_NAME: "
     if start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background \
 			  --startas /bin/sh \
 			  -- -c "exec $DAEMON $DAEMON_ARGS >/var/log/brutefir.log 2>&1"
     then
 	until echo 'lf' | nc localhost 3000 &> /dev/null; do sleep 0.1 ; done
-	echo "OK"
+	clog "OK"
     else
-	echo "FAIL"
+	clog "FAIL"
 	exit -1
     fi
 
+    clogn "brutefir cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
-        printf "Stopping $DAEMON_NAME: "
+        clog -n "Stopping $DAEMON_NAME: "
         start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-                && echo "OK" || echo "FAIL"
+                && clog "OK" || clog "FAIL"
 }
 
 case "$1" in
@@ -160,7 +163,7 @@ case "$1" in
                 start
                 ;;
         *)
-                echo "Usage: $0 {start|stop|restart}"
+                clog "Usage: $0 {start|stop|restart}"
                 exit 1
 esac
 
