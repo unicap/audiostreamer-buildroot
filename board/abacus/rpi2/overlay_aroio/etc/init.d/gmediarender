@@ -1,0 +1,55 @@
+#!/bin/sh
+
+. /etc/aroio/userconfig
+
+NAME=gmediarender
+USER=gmediarender
+GROUP=gmediarender
+DAEMON=/usr/bin/gmediarender
+PIDFILE=/var/run/$NAME.pid
+
+DAEMON_ARGS="-u \"$MACADDR\" -d -f \"$PLAYERNAME\" -upnp"
+if [ "$BRUTEFIR" = "OFF" ]
+then
+    DAEMON_ARGS+=" --gstout-audiosink=alsasink"
+    if [ "$MSCODING" = "ON" ]
+    then
+	DAEMON_ARGS+=" --gstout-audiodevice=mscoded"
+    else
+	DAEMON_ARGS+=" --gstout-audiodevice=stereo"
+    fi
+else
+    DAEMON_ARGS+=" --gstout-audiosink=jackaudiosink --gstout-audiostringproperties=port-pattern=brutefir"
+fi
+
+start() {
+    cmark
+    clog -n "Starting $NAME: "
+    start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
+                      -- $DAEMON_ARGS \
+        && clog "OK" || clog "FAIL"
+    clogn "gmediarender cmdline: $DAEMON $DAEMON_ARGS"
+}
+
+stop() {
+        clog -n "Stopping $NAME: "
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE \
+                && clog "OK" || clog "FAIL"
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 1
+                start
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                exit 1
+esac
