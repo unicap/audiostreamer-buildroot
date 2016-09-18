@@ -2,6 +2,8 @@
 
 . /etc/aroio/userconfig
 
+. /opt/shutils.sh
+
 NAME=jackd
 DAEMON=/usr/bin/jackd
 PIDFILE=/var/run/$NAME.pid
@@ -14,36 +16,41 @@ else	DAEMON_ARGS="-R -P 10 -dalsa -P -C -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n2"
 fi
 
 start() {
-    printf "Starting $NAME: "
+    cmark
+    clog -n "Starting $NAME: "
     # Start jackd via /bin/bash to allow proper redirection of stdout to a log file
     if start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background \
 			 --startas /bin/sh \
 			 -- -c "exec $DAEMON $DAEMON_ARGS >/var/log/jackd.log 2>&1"
     then
-	echo "OK"
+	jack_wait -w -t 5
+	if [ $(jack_wait -c) = "running" ]
+	then clog "OK"
+	else clog "FAIL"
+	fi
 	if [ "$AUDIOPLAYER" = "netjack"  ]
 	then
-	    printf "Loading jack netmanager: "
+	    clog -n "Loading jack netmanager: "
 	    if [ "$(cat /sys/class/net/eth0/carrier)" = "1" ]
 	    then
-		/usr/bin/jack_wait -w
 		jack_load netmanager >> /var/log/jackd.log \
-		    && echo "OK" || echo "FAIL"
+		    && clog "OK" || clog "FAIL"
 		/etc/init.d/brutefir_connect_netjackports &> /dev/null &
 	    else
-		echo "No network carrier found, cannot start netjack!" >> /var/log/jackd.log
-		echo "No network carrier, not starting"
+		clog "No network carrier found, cannot start netjack!" >> /var/log/jackd.log
+		clog "No network carrier, not starting"
 	    fi
 	fi
     else
-	echo "FAIL"
+	clog "FAIL"
     fi
+    clogn "Jack cmdline: exec $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
-        printf "Stopping $NAME: "
+        clog -n "Stopping $NAME: "
         start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-                && echo "OK" || echo "FAIL"
+                && clog "OK" || clog "FAIL"
 }
 
 case "$1" in
@@ -59,6 +66,6 @@ case "$1" in
                 start
                 ;;
         *)
-                echo "Usage: $0 {start|stop|restart}"
+                clog "Usage: $0 {start|stop|restart}"
                 exit 1
 esac
