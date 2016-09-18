@@ -48,7 +48,16 @@ case $SOUNDCARD in
 'M-Audio Fast Track Pro')
 	modprobe snd_usb_audio vid=0x763 pid=0x2012 device_setup=0x09 index=0 enable=1
 	;;
+
 'Focusrite Scarlett')
+	modprobe snd_usb_audio
+	;;
+
+'RME Fireface UCX')
+	modprobe snd_usb_audio
+	;;
+
+'Lynx Hilo')
 	modprobe snd_usb_audio
 	;;
 

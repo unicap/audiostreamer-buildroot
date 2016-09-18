@@ -31,9 +31,6 @@ dtoverlay=iqaudio-dac
 disable_overscan=1
 EOF
 
-		#if ! ls -lah /dev/root | grep -q mmcblk0p2
-		#then 	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		#fi
 		cardmount ro
 		reboot
 	fi
@@ -59,9 +56,6 @@ dtparam=spi=on
 disable_overscan=1
 EOF
 
-		#if ! ls -lah /dev/root | grep -q mmcblk0p2
-		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		#fi
 		cardmount ro
 		reboot
 	fi
@@ -84,9 +78,6 @@ dtoverlay=hifiberry-digi
 disable_overscan=1
 EOF
 
-	if ! ls -lah /dev/root | grep -q mmcblk0p2
-	then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-	fi
 	cardmount ro
 	reboot
 	fi
@@ -108,9 +99,6 @@ disable_overscan=1
 #fasttrack_pro
 EOF
 
-		#if ! ls -lah /dev/root | grep -q mmcblk0p2
-		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		#fi
 		cardmount ro
 		reboot
 	fi
@@ -132,9 +120,6 @@ disable_overscan=1
 #fr_scarlett
 EOF
 
-		#if ! ls -lah /dev/root | grep -q mmcblk0p2
-		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		#fi
 		cardmount ro
 		reboot
 	fi
@@ -156,13 +141,51 @@ disable_overscan=1
 #ni_audio8dj
 EOF
 
-		#if ! ls -lah /dev/root | grep -q mmcblk0p2
-		#then	echo "initramfs aroioimage.cpio.gz followkernel" >> /mnt/mmcblk0p1/config.txt
-		#fi
+		cardmount ro
+		reboot
+	fi
+	;;
+
+	'RME Fireface UCX')
+	if ! grep -q "#fireface_ucx" /mnt/mmcblk0p1/config.txt
+	then
+		cardmount rw
+		echo "userconfig and config.txt have different entries for soundcards,"
+		echo "backing up and writing a new config.txt..."
+		cp /mnt/mmcblk0p1/config.txt /mnt/mmcblk0p1/config.txt-bak
+		cat << EOF > /mnt/mmcblk0p1/config.txt
+dtdebug=1
+max_usb_current=1
+disable_splash=1
+kernel=zImage
+disable_overscan=1
+#fireface_ucx
+EOF
+
+		cardmount ro
+		reboot
+	fi
+	;;
+
+	'Lynx Hilo')
+	if ! grep -q "#lynx_hilo" /mnt/mmcblk0p1/config.txt
+	then
+		cardmount rw
+		echo "userconfig and config.txt have different entries for soundcards,"
+		echo "backing up and writing a new config.txt..."
+		cp /mnt/mmcblk0p1/config.txt /mnt/mmcblk0p1/config.txt-bak
+		cat << EOF > /mnt/mmcblk0p1/config.txt
+dtdebug=1
+max_usb_current=1
+disable_splash=1
+kernel=zImage
+disable_overscan=1
+#lynx_hilo
+EOF
+
 		cardmount ro
 		reboot
 	fi
 	;;
 
 esac
-#NI Audio 8 DJ

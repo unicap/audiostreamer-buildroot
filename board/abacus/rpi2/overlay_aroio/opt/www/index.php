@@ -339,7 +339,7 @@
 
 				 	<a style="text-decoration: none href="#" title="<? print ${helptext_soundcard._.$lang} ?>"class="tooltip">
 					<span title=""><label for="Soundcard"> <? print ${soundcard._.$lang} ; ?> </label></span></a>
-					<?$arr_soundcard= array('IQAudIO DAC','HiFiBerry DAC+','HiFiBerry Digi','M-Audio Fast Track Pro','Lynx Hilo','Focusrite Scarlett','NI Audio 8 DJ');
+					<?$arr_soundcard= array('IQAudIO DAC','HiFiBerry DAC+','HiFiBerry Digi','M-Audio Fast Track Pro','Lynx Hilo','Focusrite Scarlett','NI Audio 8 DJ','RME Fireface UCX');
 					//<?$arr_soundcard= array('IQAudIO DAC','HiFiBerry DAC+','HiFiBerry Digi','M-Audio Fast Track Pro','Focusrite Scarlett');
 				 	print_optgroup("SOUNDCARD",$arr_soundcard,$ini_array["SOUNDCARD"]);
 				?>
