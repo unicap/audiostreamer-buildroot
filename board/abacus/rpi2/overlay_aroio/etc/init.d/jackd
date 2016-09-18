@@ -10,10 +10,34 @@ PIDFILE=/var/run/$NAME.pid
 DAEMON_ARGS="-ddummy -r96000 -p 1024"
 JACKBUFFER=1024
 
-if [ "$SOUNDCARD" = "M-Audio Fast Track Pro" ] && [ "$CHANNELS" = "4" ]
-then	DAEMON_ARGS="-R -P 10 -dalsa -P -dftp4ch -r"$RATE"000 -p $JACKBUFFER -n2"
-else	DAEMON_ARGS="-R -P 10 -dalsa -P -C -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n2"
-fi
+#if [ "$SOUNDCARD" = "M-Audio Fast Track Pro" ] && [ "$CHANNELS" = "4" ]
+#then	DAEMON_ARGS="-R -P 10 -dalsa -P -dftp4ch -r"$RATE"000 -p $JACKBUFFER -n2"
+#else	DAEMON_ARGS="-R -P 10 -dalsa -i 2 -o "$CHANNELS" -P -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n2"
+#fi
+
+# Always use a jackd multplier ( -n ) of 3 to be compatible with USB-Interfaces!
+
+case $SOUNDCARD in
+	"M-Audio Fast Track Pro")
+	if [ "$CHANNELS" = "4" ] ; then DAEMON_ARGS="-R -P 10 -dalsa -P -dftp4ch -r"$RATE"000 -p $JACKBUFFER -n3" ; fi
+	;;
+
+	"RME Fireface UCX")
+	JACKBUFFER=1024
+	DAEMON_ARGS="-R -P 10 -dalsa -i 2 -o "$CHANNELS" -P -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n3"
+	;;
+
+	"Focusrite Scarlett")
+	JACKBUFFER=1024
+	DAEMON_ARGS="-R -P 10 -dalsa -C -P -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n3"
+	;;
+
+	*)
+	JACKBUFFER=8192
+	DAEMON_ARGS="-R -P 10 -dalsa -P -dhw:0 -r"$RATE"000 -p $JACKBUFFER -n3"
+	;;
+esac
+
 
 start() {
     cmark
