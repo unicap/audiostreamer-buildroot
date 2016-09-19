@@ -2,6 +2,8 @@
 
 . /etc/aroio/userconfig
 
+. /opt/shutils.sh
+
 DAEMON_NAME=brutefir
 DAEMON=/usr/bin/brutefir
 PIDFILE=/var/run/$DAEMON_NAME.pid
@@ -139,6 +141,7 @@ start() {
 	exit -1
     fi
 
+    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
