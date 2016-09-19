@@ -1,15 +1,66 @@
 #!/bin/sh
 
+. /etc/aroio/userconfig
+
+. /opt/shutils.sh
+
 NAME=squeezelite-jack
 DAEMON=/usr/bin/squeezelite-jack
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-o jack -M AroioEX"
+DAEMON_ARGS="-o jack"
 
 start() {
-        printf "Starting $NAME: "
-        start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
-                -- $DAEMON_ARGS \
-                && echo "OK" || echo "FAIL"
+    if ! [ "$SERVERNAME" = ""  ]
+    then
+	if ! (ping -c1 $SERVERNAME) &> /dev/null
+	then
+	    #echo "Squeezelite: Squeezebox-Server "$SERVERNAME" not available, waiting..."
+	    until (ping -c1 $SERVERNAME) &> /dev/null
+	    do
+		sleep 0.2
+	    done
+	fi
+    else
+	until (ping -c1 127.0.0.1) &> /dev/null
+	do
+	    sleep 0.3
+	done
+	echo "Squeezelite: Network available!"
+    fi
+
+    sleep 1
+    if grep 1 /sys/class/net/eth0/carrier &> /dev/null
+    then	MACADDR=$(cat /sys/class/net/eth0/address)
+    else	MACADDR=$(cat /sys/class/net/wlan0/address)
+    fi
+
+    if ! [ "$SERVERNAME" = "" ]
+    then
+	echo -e "Squeezelite: LMS-Server available, starting up..."
+    else
+	echo "Squeezelite: LMS-Server set to be automagically detected, starting up."
+    fi
+    if [ "$DEBUG" = "ON" ]
+    then
+	echo "             Debugging activated in userconfig.txt, logging to /var/log/"
+	DEBUGSQUEEZE="-d all=info -f /var/log/squeezelitelog.txt"
+    else
+	DEBUG=""
+    fi
+    if [ "$MSCODING" = "ON" ]
+    then	echo "             ms-coded!"
+    else	echo "             stereo!"
+    fi
+    RESAMPLE="-R -u hL"
+    ALSAPARAMS="-b 1024:16384"
+
+    DAEMON_ARGS="$DAEMON_ARGS -m $MACADDR -n $PLAYERNAME -s $SERVERNAME -z $DEBUGSQUEEZE $RESAMPLE $ALSAPARAMS"
+
+    printf "Starting $NAME: "
+    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
+    start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
+                      -- $DAEMON_ARGS \
+        && echo "OK" || echo "FAIL"
 }
 
 stop() {
