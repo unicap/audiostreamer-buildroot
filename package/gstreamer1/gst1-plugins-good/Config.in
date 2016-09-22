@@ -148,6 +148,10 @@ config BR2_PACKAGE_GST1_PLUGINS_GOOD_PLUGIN_INTERLEAVE
 	help
 	  Audio interleaver/deinterleaver
 
+config BR2_PACKAGE_GST1_PLUGINS_GOOD_PLUGIN_JACK
+       bool "jack"
+       select BR2_PACKAGE_JACK2
+
 config BR2_PACKAGE_GST1_PLUGINS_GOOD_PLUGIN_ISOMP4
 	bool "isomp4"
 	default y

@@ -41,7 +41,7 @@ my_umount()
 my_mount()
 {
     EXTDEVICE=/dev/$1
-    EXTFS=$(eval $(blkid $EXTDEVICE | awk ' { print $3 } '); echo $TYPE)
+    EXTFS=$(eval $(blkid $EXTDEVICE | awk ' { print $4 } '); echo $TYPE)
 
     if [ $EXTFS ]; then
 	echo "Found external storage with fs type: $EXTFS and mounting it"

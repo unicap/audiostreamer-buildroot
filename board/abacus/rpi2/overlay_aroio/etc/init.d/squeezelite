@@ -9,34 +9,68 @@ USER=squeezelite
 GROUP=squeezelite
 DAEMON=/usr/bin/squeezelite
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-M AroioEX -p 99 -z"
-
+DAEMON_ARGS=""
 
 start() {
-    cmark
-    clog -n "Starting $NAME: "
+    if ! [ "$SERVERNAME" = ""  ]
+    then
+	if ! (ping -c1 $SERVERNAME) &> /dev/null
+	then
+	    #echo "Squeezelite: Squeezebox-Server "$SERVERNAME" not available, waiting..."
+	    until (ping -c1 $SERVERNAME) &> /dev/null
+	    do
+		sleep 0.2
+	    done
+	fi
+    else
+	until (ping -c1 127.0.0.1) &> /dev/null
+	do
+	    sleep 0.3
+	done
+	echo "Squeezelite: Network available!"
+    fi
+
+    sleep 1
+    if grep 1 /sys/class/net/eth0/carrier &> /dev/null
+    then	MACADDR=$(cat /sys/class/net/eth0/address)
+    else	MACADDR=$(cat /sys/class/net/wlan0/address)
+    fi
+
+    if ! [ "$SERVERNAME" = "" ]
+    then
+	echo -e "Squeezelite: LMS-Server available, starting up..."
+    else
+	echo "Squeezelite: LMS-Server set to be automagically detected, starting up."
+    fi
+    if [ "$DEBUG" = "ON" ]
+    then
+	echo "             Debugging activated in userconfig.txt, logging to /var/log/"
+	DEBUGSQUEEZE="-d all=info -f /var/log/squeezelitelog.txt"
+    else
+	DEBUG=""
+    fi
     ALSAPARAMS="-a 8192:1024:32:0 -b 1024:8192"
-    RATE=""
-    RESAMPLE=""
     if [ "$MSCODING" = "ON" ]
     then
 	OUTPUT="-o mscoded"
-	clog -n " (Output is MS-coded!) "
+	echo "             Output is MS-coded!"
     else
 	OUTPUT="-o plughw:0,0"
-	clog -n " (Output is stereo!) "
+	echo "             Output is stereo!"
     fi
-    DAEMON_ARGS="$DAEMON_ARGS $ALSAPARAMS $OUTPUT"
-    start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --exec "$DAEMON" \
+    DAEMON_ARGS="$DAEMON_ARGS -m $MACADDR -n $PLAYERNAME -s $SERVERNAME -z $OUTPUT $DEBUGSQUEEZE $ALSAPARAMS"
+
+    printf "Starting $NAME: "
+    start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
                       -- $DAEMON_ARGS \
-        && clog "OK" || clog "FAIL"
-    clogn "squeezelite cmdline: $DAEMON $DAEMON_ARGS"
+        && echo "OK" || echo "FAIL"
+    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
-        clog -n "Stopping $NAME: "
+        printf "Stopping $NAME: "
         start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-                && clog "OK" || clog "FAIL"
+                && echo "OK" || echo "FAIL"
 }
 
 case "$1" in

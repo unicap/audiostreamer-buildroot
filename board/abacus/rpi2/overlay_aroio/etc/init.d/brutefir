@@ -2,6 +2,8 @@
 
 . /etc/aroio/userconfig
 
+. /opt/shutils.sh
+
 DAEMON_NAME=brutefir
 DAEMON=/usr/bin/brutefir
 PIDFILE=/var/run/$DAEMON_NAME.pid
@@ -124,30 +126,28 @@ prepare_config() {
 
 
 start() {
-    cmark
-    clog -n "Preparing BruteFIR config: "
+    printf "Preparing BruteFIR config: "
     prepare_config
-    clog "OK"
-    cmark
-    clog -n "Starting $DAEMON_NAME: "
+    echo "OK"
+    printf "Starting $DAEMON_NAME: "
     if start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background \
 			  --startas /bin/sh \
 			  -- -c "exec $DAEMON $DAEMON_ARGS >/var/log/brutefir.log 2>&1"
     then
 	until echo 'lf' | nc localhost 3000 &> /dev/null; do sleep 0.1 ; done
-	clog "OK"
+	echo "OK"
     else
-	clog "FAIL"
+	echo "FAIL"
 	exit -1
     fi
 
-    clogn "brutefir cmdline: $DAEMON $DAEMON_ARGS"
+    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
-        clog -n "Stopping $DAEMON_NAME: "
+        printf "Stopping $DAEMON_NAME: "
         start-stop-daemon --stop --quiet --pidfile $PIDFILE \
-                && clog "OK" || clog "FAIL"
+                && echo "OK" || echo "FAIL"
 }
 
 case "$1" in
@@ -163,7 +163,7 @@ case "$1" in
                 start
                 ;;
         *)
-                clog "Usage: $0 {start|stop|restart}"
+                echo "Usage: $0 {start|stop|restart}"
                 exit 1
 esac
 

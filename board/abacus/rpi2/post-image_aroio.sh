@@ -14,6 +14,7 @@ DISTDIR=$(dirname $0)/dist_aroio
 
 echo "Generating SD card content in ${EXPORTDIR}"
 
+
 mkdir -p ${EXPORTDIR}
 cp -r ${BINARIES_DIR}/rpi-firmware/* ${EXPORTDIR}/ || echo "Error ignored"
 cp ${BINARIES_DIR}/*.dtb ${EXPORTDIR}/
@@ -23,6 +24,10 @@ cp -r ${DISTDIR}/* ${EXPORTDIR}/
 
 #rm -f ${EXPORTDIR}/cmdline.txt
 
+if [ -e userconfig_default.txt ]; then
+    echo "Found a default userconfig, using this"
+    cp userconfig_default.txt ${EXPORTDIR}/userconfig.txt
+fi
 
 BOARD_DIR="$(dirname $0)"
 BOARD_NAME="$(basename ${BOARD_DIR})"

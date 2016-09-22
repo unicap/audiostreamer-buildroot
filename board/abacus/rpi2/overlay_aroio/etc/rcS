@@ -4,13 +4,12 @@
 # Screen Blanking abschalten
 echo -e "\033[9;0]"
 
-
-
-
 LD_LIBRARY_PATH=/lib
 export LD_LIBRARY_PATH
 TZ="Europe/Berlin"
 export TZ
+
+. /opt/shutils.sh
 
 mount -t sysfs sysfs /sys
 
@@ -28,7 +27,7 @@ if [ -e /mnt/mmcblk0p1/userconfig.txt ]; then
     cp /mnt/mmcblk0p1/userconfig.txt /etc/aroio/userconfig
 fi
 
-/etc/init.d/checksoundcard
+/etc/init.d/checksoundcard | tee -a /tmp/shell.log
 
 #/etc/init.d/gpio &
 #/etc/init.d/checkstatus &> /dev/null &
@@ -44,30 +43,30 @@ mount none -t tmpfs -o defaults /dev/shm
 
 mkdir -p /var/run/dbus
 
-/etc/init.d/network &
+(/etc/init.d/network | tee -a /tmp/shell.log)&
 
 export LANG=en_US.utf8
 mkdir /var/log
 
-/etc/init.d/amixer &
-echo "System:      Copying default filters..."
+/etc/init.d/amixer | tee -a /tmp/shell.log &
+clog "System:      Copying default filters..."
 cp -ar /mnt/mmcblk0p1/brutefir/*.dbl /home/sftparoio
-tar xf /mnt/mmcblk0p1/filter.tgz -C /home/sftparoio && mv /home/sftparoio/filter/* /home/sftparoio && rmdir /home/sftparoio/filter
+gunzip -c /mnt/mmcblk0p1/filter.tgz | tar xf - -C /home/sftparoio | tee -a /tmp/shell.log && mv /home/sftparoio/filter/* /home/sftparoio && rmdir /home/sftparoio/filter
 chown -R sftparoio /home/sftparoio
 
 #/etc/init.d/checkfilters &
 touch /var/log/shairportlog.txt
 
-chmod 777 /dev/null && dropbear
-
+chmod 777 /dev/null && dropbear  | tee -a /tmp/shell.log
 
 # /usr/bin/startstreamer.sh &
 (
-    /etc/init.d/modules
-    /etc/init.d/audio start
+    /etc/init.d/modules | tee -a /tmp/shell.log
+    /etc/init.d/audio start | tee -a /tmp/shell.log
 )&
 
-/etc/init.d/httpd start
+logstart /etc/init.d/httpd start
+
 
 loadkmap < /etc/de.map
 /etc/init.d/logrotate &> /dev/null &
