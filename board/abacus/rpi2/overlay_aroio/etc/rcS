@@ -72,6 +72,7 @@ logstart /etc/init.d/httpd start
 
 
 loadkmap < /etc/de.map
+/opt/aroio/syncconfig.sh &
 /etc/init.d/logrotate &> /dev/null &
 /etc/init.d/ntpd &> /dev/null &
 
