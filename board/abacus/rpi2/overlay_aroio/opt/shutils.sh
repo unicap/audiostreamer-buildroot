@@ -46,3 +46,12 @@ logstartn() {
     $* 2>&1 >> /tmp/shell.log
     cmarksn "Finished: $(basename $1)"
 }
+
+ethaddr()
+{
+    ifconfig | grep -A 2 eth0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }'
+}
+wlanaddr()
+{
+    ifconfig | grep -A 2 wlan0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }'
+}
