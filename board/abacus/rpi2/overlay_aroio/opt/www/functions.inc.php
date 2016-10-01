@@ -7,6 +7,44 @@ function scanwifi()
 	return $wifilist;
 }
 
+
+
+// from: http://stackoverflow.com/questions/5695145/how-to-read-and-write-to-an-ini-file-with-php
+function write_php_ini($array, $file)
+{
+    $res = array();
+    foreach($array as $key => $val)
+    {
+        if(is_array($val))
+        {
+            $res[] = "[$key]";
+            foreach($val as $skey => $sval) $res[] = "$skey = ".(is_numeric($sval) ? $sval : '"'.$sval.'"');
+        }
+        else $res[] = "$key = ".(is_numeric($val) ? $val : '"'.$val.'"');
+    }
+    safefilerewrite($file, implode("\r\n", $res));
+}
+
+function safefilerewrite($fileName, $dataToSave)
+{    if ($fp = fopen($fileName, 'w'))
+    {
+        $startTime = microtime(TRUE);
+        do
+        {            $canWrite = flock($fp, LOCK_EX);
+           // If lock not obtained sleep for 0 - 100 milliseconds, to avoid collision and CPU load
+           if(!$canWrite) usleep(round(rand(0, 100)*1000));
+        } while ((!$canWrite)and((microtime(TRUE)-$startTime) < 5));
+
+        //file was locked so now we can store information
+        if ($canWrite)
+        {            fwrite($fp, $dataToSave);
+            flock($fp, LOCK_UN);
+        }
+        fclose($fp);
+    }
+
+}
+
 function validate_input($case,$input)
 {
 	switch ($case)
@@ -48,113 +86,41 @@ function validate_input($case,$input)
 
 function write_config()
 {
-	//$shell_exec_ret=shell_exec('mount -o remount,rw /mnt/mmcblk0p1/');
-	//$handle=fopen("/mnt/mmcblk0p1/userconfig.txt","w");
+    $ini_array = parse_ini_file("/etc/aroio/userconfig", 0);
 	foreach($_POST as $key=> $value)
-		{
-			switch($key)
-				{
-					case "LANG":
-					//$string = $key."=".escapeshellarg($value);
-					wrtToUserconfig('LANG',$value);
-					break;
-					case "HOSTNAME":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('HOSTNAME',$value);
-					break;
-					case "DHCP":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('DHCP',$value);
-					break;
-					case "IPADDR":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('IPADDR',$value);
-					break;
-					case "NETMASK":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('NETMASK',$value);
-					break;
-					case "DNSSERV":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('DNSSERV',$value);
-					break;
-					case "GATEWAY":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('GATEWAY',$value);
-					break;
-					case "WLANSSID":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('WLANSSID',$value);
-					break;
-					case "WLANPWD":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('WLANPWD',$value);
-					break;
-					case "MSCODING":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('MSCODING',$value);
-					break;
-					case "DEBUG":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('DEBUG',$value);
-					break;
-					case "SERVERNAME":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SERVERNAME',$value);
-					break;
-					case "SERVERPORT":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SERVERPORT',$value);
-					break;
-					case "SQUEEZEUSER":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SQUEEZEUSER',$value);
-					break;
-					case "SQUEEZEPWD":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SQUEEZEPWD',$value);
-					break;
-					case "PLAYERNAME":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('PLAYERNAME',$value);
-					break;
-					case "WLANPWD":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('WLANPWD',$value);
-					break;
-					case "VOLUME":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('VOLUME',$value);
-					break;
-					case "USERPASSWD":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('USERPASSWD',$value);
-					break;
-					case "BRUTEFIR":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('BRUTEFIR',$value);
-					break;
-					case "JACKBUFFER":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('JACKBUFFER',$value);
-					break;
-					case "AUDIOPLAYER":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('PLAYER',$value);
-					break;
-					case "SOUNDCARD":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SOUNDCARD',$value);
-					break;
-					case "RATE":
-					//$string .= "\n".$key."=".escapeshellarg($value);
-					wrtToUserconfig('SOUNDCARD',$value);
-					break;
-				}
-		}
-		
-	//fwrite($handle, $string);
-	//$shell_exec_ret=shell_exec('mount -o remount,ro /mnt/mmcblk0p1/');
+    {
+        $allowed_keys = array("LANG",
+                              "HOSTNAME",
+                              "DHCP",
+                              "IPADDR",
+                              "NETMASK",
+                              "DNSSERV",
+                              "GATEWAY",
+                              "WLANSSID",
+                              "WLANPWD",
+                              "MSCODING",
+                              "DEBUG",
+                              "SERVERNAME",
+                              "SERVERPORT",
+                              "SQUEEZEUSER",
+                              "SQUEEZEPWD",
+                              "PLAYERNAME",
+                              "WLANPWD",
+                              "VOLUME",
+                              "USERPASSWD",
+                              "BRUTEFIR",
+                              "JACKBUFFER",
+                              "AUDIOPLAYER", // maps to PLAYER for whatever reason
+                              "SOUNDCARD",
+                              "RATE");
+        if (in_array($key, $allowed_keys)) {
+            if ($key == "AUDIOPLAYER"){
+                $key = "PLAYER";
+            }
+            $ini_array[$key] = $value;
+        }
+    }
+    write_php_ini($ini_array, "/etc/aroio/userconfig");
 }
 
 
@@ -242,10 +208,7 @@ function test_wlan()
 
 function restart_lms()
 {
-	shell_exec('killall startstreamer.sh');
-	shell_exec('killall shairport');
-	shell_exec('killall squeezelite');
-	shell_exec('/usr/bin/startstreamer.sh &> /dev/null &');
+	shell_exec('/etc/init.d/audio restart &> /dev/null &');
 }
 
 function cancel_measurement()
@@ -399,36 +362,40 @@ function print_filterset($count,$ini_array)
 
 
 // Validates volume from array
-// if value is numeric write to config
-function validateAndSave($size,$arr)
+// if value is numeric set in ini_array
+function validateAndSet($size, $arr, $ini_array)
 {
-	for ($i=0; $i < $size; $i++) 
-	{ 
+	for ($i=0; $i < $size; $i++)
+	{
 		if(is_numeric($arr[vol.$i])){
 			if (-90<$arr[vol.$i] && $arr[vol.$i]<=3) {
-				wrtToUserconfig('COEFF_ATT'.$i,(-1*$arr[vol.$i]));	
-			}	
+				//wrtToUserconfig('COEFF_ATT'.$i,(-1*$arr[vol.$i]));
+                $ini_array['COEFF_ATT'.$i] = -1 * $arr[vol.$i];
+			}
 		}
-		wrtToUserconfig('COEFF_NAME'.$i,$arr[coeff.$i]);
-		wrtToUserconfig('COEFF_COMMENT'.$i,$arr[comm.$i]);
+		//wrtToUserconfig('COEFF_NAME'.$i,$arr[coeff.$i]);
+        $ini_array['COEFF_NAME'.$i] = $arr[coeff.$i];
+		//wrtToUserconfig('COEFF_COMMENT'.$i,$arr[comm.$i]);
+        $ini_array['COEFF_COMMENT'.$i] = $arr[comm.$i];
 	}
 }
 
 
 // Liest die Userconfig bis zur veraenderten Variable
 // und schreibt sie in das File
-function wrtToUserconfig($varName,$value)
-{
-	$value=strval($value);
-//	echo $varName.'="'.$value.'"';
-	$shell_exec_ret=shell_exec('mount -o remount,rw /mnt/mmcblk0p1/');
-	$file="/mnt/mmcblk0p1/userconfig.txt";
-	$pattern='/'.$varName.'=\".*\"/';
-	$content=file_get_contents($file);
-	$content=preg_replace($pattern, $varName.'="'.$value.'"', $content);
-	file_put_contents($file, $content);
-	$shell_exec_ret=shell_exec('mount -o remount,ro /mnt/mmcblk0p1/');
-}
+// function wrtToUserconfig($varName,$value)
+// {
+// 	$value=strval($value);
+// //	echo $varName.'="'.$value.'"';
+// 	$shell_exec_ret=shell_exec('mount -o remount,rw /mnt/mmcblk0p1/');
+// 	$file="/mnt/mmcblk0p1/userconfig.txt";
+// 	$pattern='/'.$varName.'=\".*\"/';
+// 	$content=file_get_contents($file);
+// 	$content=preg_replace($pattern, $varName.'="'.$value.'"', $content);
+// 	file_put_contents($file, $content);
+// 	$shell_exec_ret=shell_exec('mount -o remount,ro /mnt/mmcblk0p1/');
+// }
+
 //Liest die Coeffsets ein und gibt die jeweilige Zurordnung 
 //als Array zurueck
 //Uebergabe: anzahl an Coeffsets

@@ -7,10 +7,13 @@
 
 	if($_GET["lang"] === "en") $lang='en'; else $lang='de';
 
-	if ( isset($_POST['check_update']) )
+	$ini_array = parse_ini_file("/etc/aroio/userconfig", 1);
+
+    if ( isset($_POST['check_update']) )
 	{
 		//$shell_exec_ret=shell_exec('chmod 750 /usr/bin/update check');
-		wrtToUserconfig('USEBETA',$_POST['USEBETA']);
+		// wrtToUserconfig('USEBETA',$_POST['USEBETA']);
+        $ini_array[USEBETA] = $_POST['USEBETA'];
 		exec ( "/usr/bin/update check" , $ausgabe , $return_var  );
 		list($remote[0], $remote[1]) = explode(".", $ausgabe[0]);
 		list($local[0], $local[1]) = explode(".", $ausgabe[1]);
@@ -29,7 +32,6 @@
 		unset($_POST['submit']);
 	}
 
-	$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
 
 	if ( isset($_POST['update']) )
 	{

@@ -12,6 +12,8 @@
 			$lang='de';
 			$GLOBALS["lang"]='de';
 		}
+		// Load ini-array from userconfig
+		$ini_array = parse_ini_file("/etc/aroio/userconfig", 1);
 		
 		/* Save Configuration and reload 
 		 * */
@@ -38,8 +40,9 @@
 		if(isset($_POST[set]))
 		{
 			$savedbank=$_POST[savedbank];
-			validateAndSave(10,$_POST);
-			wrtToUserconfig('DEF_COEFF',$_POST[savedbank]);
+			validateAndSet(10, $_POST, $ini_array);
+			// wrtToUserconfig('DEF_COEFF',$_POST[savedbank]);
+            $ini_array[DEF_COEFF] = $_POST[savedbank];
 			if ($ini_array[MSCODING]=='ON') {
 				volControl(1,($_POST[vol.$savedbank])*-1);
 			}
@@ -51,8 +54,9 @@
 		if(isset($_POST[save]))
 		{
 			$savedbank=$_POST[savedbank];
-			validateAndSave(10,$_POST);
-			wrtToUserconfig('DEF_COEFF',$_POST[savedbank]);
+			validateAndSet(10,$_POST, $ini_array);
+			// wrtToUserconfig('DEF_COEFF',$_POST[savedbank]);
+            $ini_array[DEF_COEFF] = $_POST[savedbank];
 			shell_exec('/etc/init.d/brutefir reload &> /dev/null ' );
 			if ($ini_array[MSCODING]=='ON') {
 				volControl(1,$_POST[vol.$savedbank]);
@@ -62,8 +66,6 @@
 			}
 		}
 		
-		// Load ini-array from userconfig.txt
-		$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
 
 		// Switch filter bank
 		if(isset($_POST[bank]))
@@ -131,6 +133,7 @@
             //}
 			$ini_array[COEFF_ATT.$activeFilter]=$actVol; //ins array
 		}
+    write_php_ini($ini_array, "/etc/aroio/userconfig");
 ?>
 <html>
     <meta name="viewport" content="width=615, initial-scale=1">

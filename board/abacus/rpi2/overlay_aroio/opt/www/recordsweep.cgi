@@ -14,8 +14,8 @@
 		$GLOBALS["lang"]='de';
 	}
 
-	// Load ini-array from userconfig.txt
-	$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
+	// Load ini-array from userconfig
+	$ini_array = parse_ini_file("/etc/aroio/userconfig", 1);
 ?>
 <html>
 	<meta name="viewport" content="width=615, initial-scale=1">

@@ -5,7 +5,7 @@
 
 	if($_GET["lang"] === "en") $lang='en'; else $lang='de';
 
-	$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
+	$ini_array = parse_ini_file("/etc/aroio/userconfig");
 	if ( isset($_POST['submit']) || isset($_POST['audiosettings_submit']) )
 	{
 		if ($_POST['DHCP'] == "OFF")
@@ -46,11 +46,9 @@
 
 		if ( !$error )
 		{
-			$shell_exec_ret=shell_exec('mount -o remount,rw /mnt/mmcblk0p1/');
 			write_config();
-			$shell_exec_ret=shell_exec('mount -o remount,ro /mnt/mmcblk0p1/');
 			unset($_POST['reboot']);
-			$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
+			$ini_array = parse_ini_file("/etc/aroio/userconfig", 1);
 			echo '<meta http-equiv="refresh"> ';
 		}
 	}
@@ -74,17 +72,12 @@
 	{
 		write_config();
 		restart_lms();
-		$ini_array = parse_ini_file("/mnt/mmcblk0p1/userconfig.txt", 1);
+		$ini_array = parse_ini_file("/etc/aroio/userconfig", 1);
 	}
 
 	if ( isset($_POST['audiosettings_submit']) )
 	{
-		shell_exec('/usr/bin/killall brutefir &> /dev/null' );
-		shell_exec('/usr/bin/killall jackd &> /dev/null' );
-		shell_exec('/usr/bin/killall brutefir_connect_netjackports &> /dev/null' );
-		shell_exec('/usr/bin/stopstreamer');
-		shell_exec('/etc/init.d/brutefir &> /dev/null' );
-		exec('/usr/bin/startstreamer.sh &> /dev/null &');
+		exec('/etc/init.d/audio restart &> /dev/null &');
 		shell_exec('/etc/init.d/amixer &> /dev/null &');
 	}
 ?>
