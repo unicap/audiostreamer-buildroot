@@ -61,8 +61,11 @@ chmod 777 /dev/null && dropbear  | tee -a /tmp/shell.log
 
 # /usr/bin/startstreamer.sh &
 (
-    /etc/init.d/modules | tee -a /tmp/shell.log
-    /etc/init.d/audio start | tee -a /tmp/shell.log
+    logstart /etc/init.d/modules
+    logstart /etc/init.d/avahi-setup start
+    logstart /etc/init.d/dbus start
+    logstart /etc/init.d/avahi-daemon start
+    logstart /etc/init.d/audio start
 )&
 
 logstart /etc/init.d/httpd start
