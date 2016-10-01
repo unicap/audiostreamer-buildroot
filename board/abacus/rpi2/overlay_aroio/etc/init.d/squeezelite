@@ -64,7 +64,7 @@ start() {
     start-stop-daemon -c $USER:$GROUP --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
                       -- $DAEMON_ARGS \
         && echo "OK" || echo "FAIL"
-    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
+    clogn "$(basename $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
