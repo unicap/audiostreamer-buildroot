@@ -58,7 +58,7 @@ start() {
     else
 	echo "FAIL"
     fi
-    clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
+    clogn "$(basename $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
 }
 
 stop() {
