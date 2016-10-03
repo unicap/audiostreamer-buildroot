@@ -10,18 +10,20 @@ GROUP=gmediarender
 DAEMON=/usr/bin/gmediarender
 PIDFILE=/var/run/$NAME.pid
 
-DAEMON_ARGS="-u \"$MACADDR\" -d -f \"$PLAYERNAME\" -upnp"
+MACADDR=$(macaddr)
+
+DAEMON_ARGS="-u \"$MACADDR\" -d -f \"$PLAYERNAME\" "
 if [ "$BRUTEFIR" = "OFF" ]
 then
-    DAEMON_ARGS+=" --gstout-audiosink=alsasink"
+    DAEMON_ARGS="$DAEMON_ARGS --gstout-audiosink=alsasink"
     if [ "$MSCODING" = "ON" ]
     then
-	DAEMON_ARGS+=" --gstout-audiodevice=mscoded"
+	DAEMON_ARGS="$DAEMON_ARGS --gstout-audiodevice=mscoded"
     else
-	DAEMON_ARGS+=" --gstout-audiodevice=stereo"
+	DAEMON_ARGS="$DAEMON_ARGS --gstout-audiodevice=stereo"
     fi
 else
-    DAEMON_ARGS+=" --gstout-audiosink=jackaudiosink --gstout-audiostringproperties=port-pattern=brutefir"
+    DAEMON_ARGS="$DAEMON_ARGS --gstout-audiosink=jackaudiosink --gstout-audiostringproperties=port-pattern=brutefir"
 fi
 
 start() {
