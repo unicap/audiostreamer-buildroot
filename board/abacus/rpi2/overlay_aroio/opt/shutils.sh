@@ -55,3 +55,11 @@ wlanaddr()
 {
     ifconfig | grep -A 2 wlan0 | grep -w inet -m1 | grep -v 127 | awk -F[:] '{ print $2  }' | awk -F[:' '] '{ print $1 }'
 }
+
+macaddr()
+{
+    if grep 1 /sys/class/net/eth0/carrier &> /dev/null
+    then	cat /sys/class/net/eth0/address
+    else	cat /sys/class/net/wlan0/address
+    fi
+}
