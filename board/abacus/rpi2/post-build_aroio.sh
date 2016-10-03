@@ -20,6 +20,10 @@ if [ -e ${TARGET_DIR}/etc/init.d/S30dbus ]; then
     mv ${TARGET_DIR}/etc/init.d/S30dbus ${TARGET_DIR}/etc/init.d/dbus
 fi
 
+if [ -e ${TARGET_DIR}/etc/init.d/S91smb ]; then
+    mv ${TARGET_DIR}/etc/init.d/S91smb ${TARGET_DIR}/etc/init.d/smb
+fi
+
 if [ ! "${TARGET_DIR}" = "" ]; then
     echo "Removing:"
     ls ${TARGET_DIR}/etc/init.d/S[0-9]* || true
