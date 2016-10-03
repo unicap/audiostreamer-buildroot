@@ -37,8 +37,10 @@ start() {
     if ! [ "$SERVERNAME" = "" ]
     then
 	echo -e "Squeezelite: LMS-Server available, starting up..."
+	SERVEROPT="-s $SERVERNAME"
     else
 	echo "Squeezelite: LMS-Server set to be automagically detected, starting up."
+	SERVEROPT=""
     fi
     if [ "$DEBUG" = "ON" ]
     then
@@ -54,7 +56,7 @@ start() {
     RESAMPLE="-R -u hL"
     ALSAPARAMS="-b 1024:16384"
 
-    DAEMON_ARGS="$DAEMON_ARGS -m $MACADDR -n $PLAYERNAME -s $SERVERNAME -z $DEBUGSQUEEZE $RESAMPLE $ALSAPARAMS"
+    DAEMON_ARGS="$DAEMON_ARGS -m $MACADDR -n $PLAYERNAME $SERVEROPT $DEBUGSQUEEZE $RESAMPLE $ALSAPARAMS"
 
     printf "Starting $NAME: "
     clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
