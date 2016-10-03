@@ -22,13 +22,13 @@ start_samba()
     mkdir -p /var/cache/samba
     mkdir -p /var/lib/samba/private
     mkdir -p /var/lock
-    /etc/init.d/S91smb stop
-    /etc/init.d/S91smb start
+    /etc/init.d/smb stop
+    /etc/init.d/smb start
 }
 
 stop_samba()
 {
-    /etc/init.d/S91smb stop
+    /etc/init.d/smb stop
 }
 
 my_umount()
@@ -41,7 +41,7 @@ my_umount()
 my_mount()
 {
     EXTDEVICE=/dev/$1
-    EXTFS=$(eval $(blkid $EXTDEVICE | awk ' { print $4 } '); echo $TYPE)
+    EXTFS=$(eval $(blkid $EXTDEVICE | awk ' { $1=""; print $0 } '); echo $TYPE)
 
     if [ $EXTFS ]; then
 	echo "Found external storage with fs type: $EXTFS and mounting it"
