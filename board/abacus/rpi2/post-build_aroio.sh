@@ -30,6 +30,8 @@ if [ ! "${TARGET_DIR}" = "" ]; then
     rm -f ${TARGET_DIR}/etc/init.d/S[0-9]*
 fi
 
+rm -f ${TARGET_DIR}/etc/init.d/shairport-sync
+
 # create required empty directories
 
 mkdir -p ${TARGET_DIR}/mnt/mmcblk0p1
