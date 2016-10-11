@@ -1,0 +1,19 @@
+#!/bin/sh
+. /etc/aroio/userconfig
+
+# shairport-sync cannot execute commands, only one, so it has to go in a separate script!
+
+#seq=-1
+#for i in $(jack_lsp | awk -F. '/jackbridge/ {print $1"."$2"."$3".1:out_00"}') ; do
+#	seq=$((seq+1)) ; jack_disconnect "$i""$seq" brutefir:input-"$seq"
+#done
+
+if [ "$BRUTEFIR" = "OFF" ]
+then
+    /bin/touch /var/shairalone
+    /etc/init.d/squeezelite stop
+    /etc/init.d/squeezelite-jack stop
+    /etc/init.d/gmediarender stop
+fi
+
+/bin/sleep 0.5

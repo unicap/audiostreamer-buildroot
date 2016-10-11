@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. /etc/aroio/userconfig
+
+if [ "$BRUTEFIR" = "OFF" ]
+then
+    /bin/rm /var/shairalone
+    /etc/init.d/shairport stop
+fi

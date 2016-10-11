@@ -33,7 +33,7 @@ start() {
 
     DAEMON=/usr/bin/$PLAYER
 
-    DAEMON_ARGS="-d -m avahi -v -w -B /usr/bin/shairport-sync-startaction -E /usr/bin/shairport-sync-stopaction \
+    DAEMON_ARGS="-d -m avahi -v -w -B /opt/aroio/shairport-sync-startaction -E /opt/aroio/shairport-sync-stopaction \
 	-a "$PLAYERNAME" $OUTPUT "
     printf "Starting $NAME: "
     clogn "$(basename $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
