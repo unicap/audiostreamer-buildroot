@@ -1,0 +1,38 @@
+#!/bin/sh
+. /etc/aroio/userconfig
+
+if [ "$SERVERNAME" = "" ]
+then
+	SERVERNAME=$(cat /var/log/lmsaddress)
+fi
+
+if [ "$SERVERPORT" = "" ]
+then
+	SERVERPORT="9000"
+fi
+
+if grep 1 /sys/class/net/eth0/carrier >> /dev/null 2>&1
+then
+	MACADDR=$(cat /sys/class/net/eth0/address)
+else
+	MACADDR=$(cat /sys/class/net/wlan0/address)
+fi
+
+if [ "$SQUEEZEUSER" = "" ]
+then
+	AUTH=""
+else
+	AUTH="$SQUEEZEUSER:$SQUEEZEPWD@"
+fi
+
+echo "Sending $1 command to server $SERVERNAME using MAC-address: $MACADDR to identify our player."
+
+case $1 in
+	pause)
+	wget -q "http://"$AUTH""$SERVERNAME":"$SERVERPORT"/status.txt?p0=pause&player=$MACADDR"
+	;;
+
+        stop)
+        wget -q "http://"$AUTH""$SERVERNAME":"$SERVERPORT"/status.txt?p0=stop&player=$MACADDR"
+        ;;
+esac

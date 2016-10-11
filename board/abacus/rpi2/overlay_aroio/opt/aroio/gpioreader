@@ -1,0 +1,15 @@
+#!/bin/sh
+
+while (true)
+do
+	STATUS27=$(cat /sys/class/gpio/gpio27/value)
+	if [ "$STATUS27" == "0" ]
+	then
+		#	echo "GPIO 27 is low, doing nothing..."
+		sleep 0.2
+	else
+		/opt/aroio/controlsqueeze pause
+		#echo "GPIO 27 is high, toggling play/pause on squeezeserver..."
+		sleep 0.2
+	fi
+done

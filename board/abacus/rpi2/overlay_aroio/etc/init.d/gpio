@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PATH=$PATH:/opt/aroio
+
 chmod -R 777 /sys/class/gpio/export
 
 echo "22" > /sys/class/gpio/export

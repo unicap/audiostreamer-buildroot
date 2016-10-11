@@ -1,0 +1,41 @@
+#!/bin/sh
+
+case $1 in
+	on)
+	echo "1" > /sys/class/gpio/gpio22/value
+	;;
+	
+	off)
+	echo "0" > /sys/class/gpio/gpio22/value
+	;;
+
+	fast)
+	while (true); do
+		echo "1" > /sys/class/gpio/gpio22/value
+		sleep 0.2
+		echo "0" > /sys/class/gpio/gpio22/value
+		sleep 0.2
+	done
+	;;
+	
+	slow)
+	while (true); do
+		echo "1" > /sys/class/gpio/gpio22/value
+		sleep 0.1
+		echo "0" > /sys/class/gpio/gpio22/value
+		sleep 0.1
+	done
+	;;
+	
+	temp)
+	for i in  $(seq 1 10); do
+		echo "1" > /sys/class/gpio/gpio22/value
+		sleep 0.2
+		echo "0" > /sys/class/gpio/gpio22/value
+		sleep 0.2
+	done
+	echo "0" > /sys/class/gpio/gpio22/value
+	while [ true ] ; do sleep 1 ; done
+	;;
+	
+esac

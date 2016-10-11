@@ -342,6 +342,7 @@ case "$1" in
    start)
       log_info_msg "Starting the D-Bus Messagebus Daemon..."
       mkdir -p /run/dbus
+      mkdir -p /var/lib/dbus
       /usr/bin/dbus-uuidgen --ensure
       start_daemon /usr/bin/dbus-daemon --system
       evaluate_retval

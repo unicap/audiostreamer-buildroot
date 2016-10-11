@@ -1,15 +1,17 @@
 #!/bin/sh
 
+PATH=$PATH:/opt/aroio
+
 gpiowriter off
 
 while (true)
 do
 	# Pruefen, ob Nameserver erreichbar, ist meist der Router (Heimnetzwerk).
 	# Alternativ koennte man auf den Router pruefen..
-	if !  (ping -w1 -c1 $(cat /etc/resolv.conf | grep nameserver | awk '{print $2}') )
+	if !  (ping -w1 -c1 $(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1) )
 	then
 		echo "$(uptime | awk '{print $1}') Cannot reach nameserver, assuming problem with network configuration!" >> /var/log/aroiolog
-		if (ps | grep -v grep | grep "gpiowriter temp")
+		if (ps x | grep -v grep | grep "gpiowriter temp")
 		then
 			echo "LED already blinking..."
 		else
@@ -21,7 +23,7 @@ do
 	elif ! (test -e /var/shairalone || ps | grep -v grep | grep -v shairport | grep squeezelite)
 	then
 		echo "$(uptime | awk '{print $1}') Squeezelite not running, blinking..." >> /var/log/aroiolog
-		if (ps | grep -v grep | grep "gpiowriter temp")
+		if (ps x | grep -v grep | grep "gpiowriter temp")
 		then
 			echo "LED alread blinking..."
 		else
@@ -29,10 +31,10 @@ do
 			gpiowriter temp &
 		fi
 			# Ansonsten pruefen, ob shairport laeuft
-	elif ! (ps | grep -v grep | grep shairport)
+	elif ! (ps x | grep -v grep | grep shairport)
 	then
 		echo "$(uptime | awk '{print $1}') Shairport not running, blinking..." >> /var/log/aroiolog
-		if (ps | grep -v grep | grep "gpiowriter temp")
+		if (ps x | grep -v grep | grep "gpiowriter temp")
 		then
 			echo "LED alread blinking..."
 		else
@@ -42,12 +44,12 @@ do
 
 	# Wenn alles gut ist, leuchten!
 	else
-		echo "Alles prima, greenlite!" 
-		kill $(ps | grep -v grep | grep "gpiowriter temp" | awk '{print $1}')
-		if ! (ps | grep -v grep | grep "gpiowriter on")
-		then
-			gpiowriter on
-		fi
+	    echo "Alles prima, greenlite!"
+	    killall gpiowriter
+	    if ! (ps x | grep -v grep | grep "gpiowriter on")
+	    then
+		gpiowriter on
+	    fi
 	fi
 
 	sleep 1
