@@ -43,13 +43,19 @@ my_mount()
     EXTDEVICE=/dev/$1
     EXTFS=$(eval $(blkid $EXTDEVICE | awk ' { $1=""; print $0 } '); echo $TYPE)
 
+    if ! [ "$EXTFS" ]; then
+	if ntfs-3g.probe --readwrite $EXTDEVICE; then
+	    EXTFS=ntfs
+	fi
+    fi
+
     if [ $EXTFS ]; then
 	echo "Found external storage with fs type: $EXTFS and mounting it"
 	EXTUID=$(id -u slimserver)
 	EXTGID=$(id -g slimserver)
 	case $EXTFS in
 	    ntfs )
-		ntfs-3g uid=$EXTUID gid=$EXTGID $EXTDEVICE "${destdir}" && EXTPRESENT=yes
+		ntfs-3g -o uid=$EXTUID,gid=$EXTGID $EXTDEVICE "${destdir}" && EXTPRESENT=yes
 		;;
 	    * )
 		mount $EXTDEVICE "${destdir}" && EXTPRESENT=yes
@@ -58,7 +64,7 @@ my_mount()
 	esac
     else
 	echo "No external storage found, exiting"
-	exit -1
+	exit 1
     fi
 }
 
