@@ -12,7 +12,7 @@ PIDFILE=/var/run/$NAME.pid
 
 MACADDR=$(macaddr)
 
-DAEMON_ARGS="-u \"$MACADDR\" -d -f \"$PLAYERNAME\" "
+DAEMON_ARGS="-u \"$MACADDR\" -f \"$PLAYERNAME\" "
 if [ "$BRUTEFIR" = "OFF" ]
 then
     DAEMON_ARGS="$DAEMON_ARGS --gstout-audiosink=alsasink"
