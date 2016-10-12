@@ -7,7 +7,7 @@
 NAME=squeezelite-jack
 DAEMON=/usr/bin/squeezelite-jack
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-o jack"
+DAEMON_ARGS="-P $PIDFILE -z -o jack"
 
 start() {
     if ! [ "$SERVERNAME" = ""  ]
@@ -60,7 +60,7 @@ start() {
 
     printf "Starting $NAME: "
     clogn "$(dirname $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
-    start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --background --exec "$DAEMON" \
+    start-stop-daemon --start --quiet --exec "$DAEMON" \
                       -- $DAEMON_ARGS \
         && echo "OK" || echo "FAIL"
 }
