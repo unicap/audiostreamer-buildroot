@@ -110,13 +110,10 @@ function write_config()
                               "USERPASSWD",
                               "BRUTEFIR",
                               "JACKBUFFER",
-                              "AUDIOPLAYER", // maps to PLAYER for whatever reason
+                              "AUDIOPLAYER", 
                               "SOUNDCARD",
                               "RATE");
         if (in_array($key, $allowed_keys)) {
-            if ($key == "AUDIOPLAYER"){
-                $key = "PLAYER";
-            }
             $ini_array[$key] = $value;
         }
     }
