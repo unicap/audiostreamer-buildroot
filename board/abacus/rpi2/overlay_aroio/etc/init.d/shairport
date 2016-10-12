@@ -3,7 +3,7 @@
 . /etc/aroio/userconfig
 . /opt/shutils.sh
 
-NAME=shairport
+NAME=shairport-sync
 PIDFILE=/var/run/$NAME.pid
 
 start() {
@@ -37,7 +37,7 @@ start() {
 	-a "$PLAYERNAME" $OUTPUT "
     printf "Starting $NAME: "
     clogn "$(basename $DAEMON) cmdline: $DAEMON $DAEMON_ARGS"
-    start-stop-daemon --make-pidfile -p$PIDFILE --start --quiet --exec "$DAEMON" \
+    start-stop-daemon --start --quiet --exec "$DAEMON" \
                 -- $DAEMON_ARGS \
         && echo "OK" || echo "FAIL"
 }
