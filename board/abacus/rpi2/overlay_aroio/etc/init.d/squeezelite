@@ -9,7 +9,7 @@ USER=squeezelite
 GROUP=squeezelite
 DAEMON=/usr/bin/squeezelite
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-z -P $PIDFILE"
+DAEMON_ARGS="-z -P $PIDFILE -f /var/log/squeezelitelog.txt"
 
 start() {
     if ! [ "$SERVERNAME" = ""  ]
@@ -87,6 +87,9 @@ case "$1" in
                 sleep 1
                 start
                 ;;
+	status)
+	    check_status "$DAEMON" "$PIDFILE" && exit 0 || exit 1
+	    ;;
         *)
                 echo "Usage: $0 {start|stop|restart}"
                 exit 1
