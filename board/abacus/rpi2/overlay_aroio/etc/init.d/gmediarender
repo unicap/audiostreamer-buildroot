@@ -52,6 +52,9 @@ case "$1" in
                 sleep 1
                 start
                 ;;
+	status)
+	    check_status "$DAEMON" "$PIDFILE" && exit 0 || exit 1
+	    ;;
         *)
                 echo "Usage: $0 {start|stop|restart}"
                 exit 1

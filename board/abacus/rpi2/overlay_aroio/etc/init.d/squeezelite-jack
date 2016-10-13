@@ -7,7 +7,7 @@
 NAME=squeezelite-jack
 DAEMON=/usr/bin/squeezelite-jack
 PIDFILE=/var/run/$NAME.pid
-DAEMON_ARGS="-P $PIDFILE -z -o jack"
+DAEMON_ARGS="-P $PIDFILE -z -o jack -a brutefir -f /var/log/squeezelitelog.txt"
 
 start() {
     if ! [ "$SERVERNAME" = ""  ]
@@ -83,7 +83,10 @@ case "$1" in
                 sleep 1
                 start
                 ;;
+	status)
+	    check_status "$DAEMON" "$PIDFILE" && exit 0 || exit 1
+	    ;;
         *)
-                echo "Usage: $0 {start|stop|restart}"
+                echo "Usage: $0 {start|stop|restart|status}"
                 exit 1
 esac
