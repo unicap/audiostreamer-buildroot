@@ -63,3 +63,15 @@ macaddr()
     else	cat /sys/class/net/wlan0/address
     fi
 }
+
+check_status()
+{
+    DAEMON=$1
+    PIDFILE=$2
+    if ! [ -e $PIDFILE ]; then return 1; fi
+    if ! [ -e /proc/$(cat $PIDFILE) ]; then return 1; fi
+    set -- $(cat /proc/$(cat $PIDFILE)/cmdline | strings)
+    EXECUTABLE=$1
+    if ! [ $DAEMON = $EXECUTABLE ]; then return 1; fi
+    return 0
+}
