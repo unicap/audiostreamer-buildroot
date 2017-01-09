@@ -18,7 +18,6 @@ define BRUTEFIR_BUILD_CMDS
 endef
 else
 define BRUTEFIR_BUILD_CMDS
-	kartoffel
 	$(MAKE) LIBPATHS="-L$(STAGING_DIR)/usr/lib" INCLUDE="-I$(STAGING_DIR)/usr/include" CC="$(TARGET_CC)" LD="$(TARGET_LD)" -C $(@D) all
 endef
 endif
