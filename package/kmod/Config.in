@@ -15,6 +15,15 @@ config BR2_PACKAGE_KMOD_TOOLS
 	  Install kmod module utilities (depmod, insmod, lsmod,
 	  modinfo, modprobe, rmmod).
 
+config BR2_PACKAGE_KMOD_PYTHON
+	bool "Python bindings for kmod"
+	depends on !BR2_PACKAGE_BLUEZ5_UTILS
+	help
+	  Build Python bindings for kmod
+
+comment "kmod Python bindings conflict with bluez5_utils because of a circular dependency"
+    depends on BR2_PACKAGE_BLUEZ5_UTILS
+
 endif
 
 comment "kmod needs a toolchain w/ dynamic library"
