@@ -11,6 +11,7 @@ config BR2_PACKAGE_PYTHON3
 	depends on BR2_TOOLCHAIN_HAS_THREADS # libffi
 	depends on !BR2_STATIC_LIBS
 	select BR2_PACKAGE_LIBFFI
+	select BR2_PACKAGE_BLUEZ5_UTILS
 	help
 	  The python language interpreter.
 
@@ -34,6 +35,19 @@ config BR2_PACKAGE_PYTHON3_PY_PYC
 	bool ".py sources and .pyc compiled"
 
 endchoice
+
+config BR2_PACKAGE_PYTHON3_BLUEZ
+  bool "bluetooth support"
+	depends on !BR2_PACKAGE_KMOD_PYTHON
+	depends on !BR2_PACKAGE_UTIL_LINUX_LIBMOUNT_PYTHON
+	help
+	  bluetooth protocol support
+
+comment "bluetooth support conflicts with kmod python"
+  depends on BR2_PACKAGE_KMOD_PYTHON
+
+comment "bluetooth support conflicts with util-linux python"
+  depends on BR2_PACKAGE_UTIL_LINUX_LIBMOUNT_PYTHON
 
 menu "core python3 modules"
 
