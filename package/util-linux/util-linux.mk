@@ -214,6 +214,7 @@ HOST_UTIL_LINUX_CONF_OPTS += --disable-all-programs
 endif
 
 # Install libmount Python bindings
+ifeq ($(BR2_PACKAGE_UTIL_LINUX_LIBMOUNT_PYTHON),y)
 ifeq ($(BR2_PACKAGE_PYTHON)$(BR2_PACKAGE_PYTHON3),y)
 UTIL_LINUX_CONF_OPTS += --with-python
 UTIL_LINUX_DEPENDENCIES += $(if $(BR2_PACKAGE_PYTHON),python,python3)
@@ -225,6 +226,8 @@ endif
 else
 UTIL_LINUX_CONF_OPTS += --without-python
 endif
+endif
+
 
 ifeq ($(BR2_PACKAGE_READLINE),y)
 UTIL_LINUX_CONF_OPTS += --with-readline

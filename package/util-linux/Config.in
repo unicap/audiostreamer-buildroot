@@ -30,6 +30,15 @@ config BR2_PACKAGE_UTIL_LINUX_LIBMOUNT
 	help
 	  Install libmount.
 
+config BR2_PACKAGE_UTIL_LINUX_LIBMOUNT_PYTHON
+  bool "libmount python bindings"
+	depends on !BR2_PACKAGE_BLUEZ5_UTILS
+	help
+	  Install python bindings for libmount.
+
+comment "libmount Python bindings conflict with bluez5_utils because of a circular dependency"
+    depends on BR2_PACKAGE_BLUEZ5_UTILS
+
 config BR2_PACKAGE_UTIL_LINUX_LIBSMARTCOLS
 	bool "libsmartcols"
 	depends on BR2_USE_MMU # fork()
