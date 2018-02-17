@@ -114,9 +114,9 @@ endif
 
 define BLUEZ5_UTILS_INSTALL_INIT_SYSTEMD
 	mkdir -p $(TARGET_DIR)/etc/systemd/system/bluetooth.target.wants
-	ln -fs ../../../../usr/lib/systemd/system/bluetooth.service \
+	ln -fs ../../../usr/lib/systemd/system/bluetooth.service \
 		$(TARGET_DIR)/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-	ln -fs ../../../../usr/lib/systemd/system/bluetooth.service \
+	ln -fs ../../../usr/lib/systemd/system/bluetooth.service \
 		$(TARGET_DIR)/etc/systemd/system/dbus-org.bluez.service
 endef
 
