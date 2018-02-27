@@ -11,3 +11,4 @@ PERL_TRY_TINY_LICENSE = MIT
 PERL_TRY_TINY_LICENSE_FILES = README
 
 $(eval $(perl-package))
+$(eval $(host-perl-package))
