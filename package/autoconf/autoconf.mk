@@ -13,6 +13,7 @@ AUTOCONF_LICENSE_FILES = COPYINGv3 COPYING.EXCEPTION
 
 HOST_AUTOCONF_CONF_ENV = \
 	EMACS="no" \
+	PERL=`which perl` \
 	ac_cv_path_M4=$(HOST_DIR)/bin/m4 \
 	ac_cv_prog_gnu_m4_gnu=no
 
