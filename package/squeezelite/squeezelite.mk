@@ -4,8 +4,9 @@
 #
 ################################################################################
 
-SQUEEZELITE_VERSION = v1.8
-SQUEEZELITE_SITE = $(call github,robadenshi,squeezelite,$(SQUEEZELITE_VERSION))
+SQUEEZELITE_VERSION = c503edc9acb203f0c12865447fe6963fd8220fb8
+SQUEEZELITE_SITE = $(call github,ralph-irving,squeezelite,$(SQUEEZELITE_VERSION))
+#SQUEEZELITE_SITE = git@github.com:ralph-irving/squeezelite.git
 SQUEEZELITE_LICENSE = GPL-3.0
 SQUEEZELITE_LICENSE_FILES = LICENSE.txt
 SQUEEZELITE_DEPENDENCIES = alsa-lib flac libmad libvorbis faad2 mpg123
