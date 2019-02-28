@@ -4,7 +4,8 @@
 #
 ################################################################################
 
-JACK2_VERSION = v1.9.12
+#JACK2_VERSION = v1.9.12
+JACK2_VERSION = 03b8316c5b771c9f28dbd708092fbb91c8210587
 JACK2_SITE = $(call github,jackaudio,jack2,$(JACK2_VERSION))
 JACK2_LICENSE = GPL-2.0+ (jack server), LGPL-2.1+ (jack library)
 JACK2_DEPENDENCIES = libsamplerate libsndfile alsa-lib host-python
