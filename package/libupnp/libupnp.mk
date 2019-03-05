@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-LIBUPNP_VERSION = 1.8.4
-#LIBUPNP_VERSION = 1.6.19
+#LIBUPNP_VERSION = 1.8.4
+LIBUPNP_VERSION = 1.6.22
 LIBUPNP_SOURCE = libupnp-$(LIBUPNP_VERSION).tar.bz2
 #LIBUPNP_SITE = http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP%20$(LIBUPNP_VERSION)
 LIBUPNP_SITE = https://sourceforge.net/projects/pupnp/files/pupnp/libupnp-$(LIBUPNP_VERSION)
