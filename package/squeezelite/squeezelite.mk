@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-#SQUEEZELITE_VERSION = c503edc9acb203f0c12865447fe6963fd8220fb8
-SQUEEZELITE_VERSION = 451cad8da651073d18118fb9ca39faef550825ff
+SQUEEZELITE_VERSION = c503edc9acb203f0c12865447fe6963fd8220fb8
+#SQUEEZELITE_VERSION = 451cad8da651073d18118fb9ca39faef550825ff
 SQUEEZELITE_SITE = $(call github,ralph-irving,squeezelite,$(SQUEEZELITE_VERSION))
 #SQUEEZELITE_SITE = git@github.com:ralph-irving/squeezelite.git
 SQUEEZELITE_LICENSE = GPL-3.0
