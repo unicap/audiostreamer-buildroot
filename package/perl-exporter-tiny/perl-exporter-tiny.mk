@@ -12,3 +12,4 @@ PERL_EXPORTER_TINY_LICENSE_FILES = COPYRIGHT LICENSE
 PERL_EXPORTER_TINY_DISTNAME = Exporter-Tiny
 
 $(eval $(perl-package))
+$(eval $(host-perl-package))
