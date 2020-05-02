@@ -1,33 +1,17 @@
-From 5ce772618e619b16157308e99cd63a474f2ed50f Mon Sep 17 00:00:00 2001
-From: Arne Caspari <arne.caspari@theimagingsource.com>
-Date: Mon, 10 Sep 2018 15:57:44 +0200
-Subject: [PATCH] Do not check for pending state
-
----
- src/network/wait-online/manager.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
 diff --git a/src/network/wait-online/manager.c b/src/network/wait-online/manager.c
-index d51b0a5..e7cd130 100644
+index 6de3df9..1db12ff 100644
 --- a/src/network/wait-online/manager.c
 +++ b/src/network/wait-online/manager.c
-@@ -74,11 +74,11 @@ bool manager_all_configured(Manager *m) {
-                         return false;
-                 }
+@@ -42,10 +42,10 @@ static int manager_link_is_online(Manager *m, Link *l, LinkOperationalState s) {
+                 return log_link_debug_errno(l, SYNTHETIC_ERRNO(EAGAIN),
+                                             "link has not yet been processed by udev");
  
--                if (STR_IN_SET(l->state, "configuring", "pending")) {
--                        log_debug("link %s is being processed by networkd",
--                                  l->ifname);
--                        return false;
--                }
-+                // if (STR_IN_SET(l->state, "configuring", "pending")) {
-+                //         log_debug("link %s is being processed by networkd",
-+                //                   l->ifname);
-+                //         return false;
-+                // }
+-        if (STR_IN_SET(l->state, "configuring", "pending"))
++/*        if (STR_IN_SET(l->state, "configuring", "pending"))
+                 return log_link_debug_errno(l, SYNTHETIC_ERRNO(EAGAIN),
+                                             "link is being processed by networkd");
+-
++*/
+         if (s < 0)
+                 s = m->required_operstate >= 0 ? m->required_operstate : l->required_operstate;
  
-                 if (l->operational_state &&
-                     STR_IN_SET(l->operational_state, "degraded", "routable"))
--- 
-2.18.0
-
