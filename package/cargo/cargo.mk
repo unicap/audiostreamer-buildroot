@@ -4,16 +4,21 @@
 #
 ################################################################################
 
-CARGO_VERSION = 0.26.0
+#CARGO_VERSION = 0.26.0
+CARGO_VERSION = 0.44.1
 CARGO_SITE = $(call github,rust-lang,cargo,$(CARGO_VERSION))
 CARGO_LICENSE = Apache-2.0 or MIT
 CARGO_LICENSE_FILES = LICENSE-APACHE LICENSE-MIT
 
-CARGO_DEPS_SHA512 = 6ed2a1644c9b18fc24ddad5350d41b6c36cd5b62de4cf0b748a57b589f4f0ac12f91461989158d58d0892bf6fc2c1626cf574e7e2b9da4b0e35f72dfd88f9048
-CARGO_DEPS_SITE = https://src.fedoraproject.org/repo/pkgs/cargo/$(CARGO_DEPS_SOURCE)/sha512/$(CARGO_DEPS_SHA512)
-CARGO_DEPS_SOURCE = cargo-$(CARGO_VERSION)-vendor.tar.xz
+#CARGO_DEPS_SHA512 = 6ed2a1644c9b18fc24ddad5350d41b6c36cd5b62de4cf0b748a57b589f4f0ac12f91461989158d58d0892bf6fc2c1626cf574e7e2b9da4b0e35f72dfd88f9048
+#CARGO_DEPS_SITE = https://src.fedoraproject.org/repo/pkgs/cargo/$(CARGO_DEPS_SOURCE)/sha512/$(CARGO_DEPS_SHA512)
+#CARGO_DEPS_VERSION = master
+#CARGO_DEPS_SITE = $(call github,m-cat,cargo-deps,$(CARGO_DEPS_VERSION))
+#CARGO_DEPS_SOURCE = cargo-deps-$(CARGO_DEPS_VERSION).tar.gz
+#CARGO_DEPS_SOURCE = cargo-$(CARGO_VERSION)-vendor.tar.xz
 
-CARGO_INSTALLER_VERSION = 4f994850808a572e2cc8d43f968893c8e942e9bf
+#CARGO_INSTALLER_VERSION = 4f994850808a572e2cc8d43f968893c8e942e9bf
+CARGO_INSTALLER_VERSION = master
 CARGO_INSTALLER_SITE = $(call github,rust-lang,rust-installer,$(CARGO_INSTALLER_VERSION))
 CARGO_INSTALLER_SOURCE = rust-installer-$(CARGO_INSTALLER_VERSION).tar.gz
 
@@ -34,12 +39,12 @@ HOST_CARGO_DEPENDENCIES = \
 HOST_CARGO_SNAP_BIN = $(HOST_CARGO_BIN_DIR)/cargo/bin/cargo
 HOST_CARGO_HOME = $(HOST_DIR)/share/cargo
 
-define HOST_CARGO_EXTRACT_DEPS
-	@mkdir -p $(@D)/vendor
-	$(call suitable-extractor,$(CARGO_DEPS_SOURCE)) \
-		$(HOST_CARGO_DL_DIR)/$(CARGO_DEPS_SOURCE) | \
-		$(TAR) --strip-components=1 -C $(@D)/vendor $(TAR_OPTIONS) -
-endef
+#define HOST_CARGO_EXTRACT_DEPS
+#	@mkdir -p $(@D)/vendor
+#	$(call suitable-extractor,$(CARGO_DEPS_SOURCE)) \
+#		$(HOST_CARGO_DL_DIR)/$(CARGO_DEPS_SOURCE) | \
+#		$(TAR) --strip-components=1 -C $(@D)/vendor $(TAR_OPTIONS) -
+#endef
 
 HOST_CARGO_POST_EXTRACT_HOOKS += HOST_CARGO_EXTRACT_DEPS
 
@@ -52,16 +57,16 @@ endef
 
 HOST_CARGO_POST_EXTRACT_HOOKS += HOST_CARGO_EXTRACT_INSTALLER
 
-define HOST_CARGO_SETUP_DEPS
-	mkdir -p $(@D)/.cargo
-	( \
-		echo "[source.crates-io]"; \
-		echo "registry = 'https://github.com/rust-lang/crates.io-index'"; \
-		echo "replace-with = 'vendored-sources'"; \
-		echo "[source.vendored-sources]"; \
-		echo "directory = '$(@D)/vendor'"; \
-	) > $(@D)/.cargo/config
-endef
+#define HOST_CARGO_SETUP_DEPS
+#	mkdir -p $(@D)/.cargo
+#	( \
+#		echo "[source.crates-io]"; \
+#		echo "registry = 'https://github.com/rust-lang/crates.io-index'"; \
+#		echo "replace-with = 'vendored-sources'"; \
+#		echo "[source.vendored-sources]"; \
+#		echo "directory = '$(@D)/vendor'"; \
+#	) > $(@D)/.cargo/config
+#endef
 
 HOST_CARGO_PRE_CONFIGURE_HOOKS += HOST_CARGO_SETUP_DEPS
 
