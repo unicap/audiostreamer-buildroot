@@ -10,8 +10,7 @@ PYTHON_GOBJECT_SOURCE = pygobject-$(PYTHON_GOBJECT_VERSION).tar.xz
 PYTHON_GOBJECT_SITE = http://ftp.gnome.org/pub/gnome/sources/pygobject/$(PYTHON_GOBJECT_VERSION_MAJOR)
 PYTHON_GOBJECT_LICENSE = LGPL-2.1+
 PYTHON_GOBJECT_LICENSE_FILES = COPYING
-PYTHON_GOBJECT_DEPENDENCIES = host-pkgconf libglib2
-PYTHON_GOBJECT_CONF_OPTS = --disable-introspection
+PYTHON_GOBJECT_DEPENDENCIES = host-pkgconf libglib2 gobject-introspection
 # for 0001-add-PYTHON_INCLUDES-override.patch
 PYTHON_GOBJECT_AUTORECONF = YES
 
